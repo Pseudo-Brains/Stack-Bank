@@ -18,6 +18,8 @@
   "homepage": "https://github.com/Pseudo-Brains/Stack-Bank#readme",
   "dependencies": {
     "express": "~4.18.1",
+    "joi": "^17.6.0",
+    "joi-phone-number": "^5.1.1",
     "nodemon": "^2.0.19"
   }
 }
