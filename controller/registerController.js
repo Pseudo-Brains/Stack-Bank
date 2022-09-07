@@ -1,6 +1,8 @@
-const express = require("express");
-const {loginValidation } = require("../module/validation")
+const { registerValidation } = require("../module/validation");
+const UserModule = require("../module/module");
 
-const registerControllerPost = (req, res) => {
-  const { error } = registerValidation(req.body);
+const registerControllerPost = async (req, res) => {};
+
+module.exports = {
+  registerControllerPost,
 };
