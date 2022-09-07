@@ -17,3 +17,8 @@ const registerValidation = (data) => {
 };
 
 module.exports.registerValidation = registerValidation;
+
+
+const loginValidation = data =>{
+  const Schema = Joi.on
+}
