@@ -1,6 +1,4 @@
 const express = require("express");
-<<<<<<< HEAD
-const mongoose = require("mongoose")
 const bodyParser= require("body-parser")
 const cors = require("cors")
 
@@ -29,10 +27,7 @@ app.use("/api", loginRoute)
 
 
 
-app.listen(4040,()=> console.log("server is runing"))
-=======
-const app = express();
->>>>>>> 980c3fb0fdadfd34f6ef6f393fdd3c00269a1bf3
+
 
 //routes
 const registerRoute = require("./route/register");
