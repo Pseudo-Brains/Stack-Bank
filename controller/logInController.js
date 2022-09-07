@@ -2,17 +2,18 @@ const express = require("express")
 const joi = require("joi")
 const jwt = require("jsonwebtoken")
 const bcrypt= require("bcrypt")
+const {UserModel}= require("../module/module")
  const {loginValidation} = require("../module/validation")
 
-const logIncontroller = async (req, res) => {
+const logIncontroller = async function (req, res)  {
     try {
-
         const loginData = {
             email: req.body.email,
             password: req.body.password,
         };
-   const { error}= logIncontroller(loginData)
-
+   const { error}= loginValidation(loginData)
+   
+   
 
          
         
@@ -22,7 +23,7 @@ const logIncontroller = async (req, res) => {
 }
 
 
-module.export={
-    logIncontroller:logIncontroller
+module.exports= {
+    logIncontroller: logIncontroller
 }
 
