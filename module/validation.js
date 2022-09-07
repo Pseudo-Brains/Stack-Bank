@@ -16,9 +16,22 @@ const registerValidation = (data) => {
   return Schema.validate(data);
 };
 
-module.exports.registerValidation = registerValidation;
+
 
 
 const loginValidation = data =>{
-  const Schema = Joi.on
+  const Schema = Joi.object({
+    Email: Joi.string()
+    .min(6)
+    .required()
+    .email({ tlds: { allow: ["com", "net"] } })
+    .regex(/^[a-zA-Z0-9_][a-zA-Z0-9_.]*/),
+    Password: Joi.string().min(6).required(),
+  })
 }
+
+
+module.exports = {
+registerValidation : registerValidation,
+loginValidation :loginValidation
+};
