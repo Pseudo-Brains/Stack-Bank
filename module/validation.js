@@ -21,13 +21,14 @@ const registerValidation = (data) => {
 
 const loginValidation = data =>{
   const Schema = Joi.object({
-    Email: Joi.string()
+    email: Joi.string()
     .min(6)
     .required()
-    .email({ tlds: { allow: ["com", "net"] } })
+    .email()
     .regex(/^[a-zA-Z0-9_][a-zA-Z0-9_.]*/),
-    Password: Joi.string().min(6).required(),
-  })
+    password: Joi.string().min(6).required(),
+  });
+  return Schema.validate(data,{abortEarly:false})
 }
 
 
