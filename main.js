@@ -3,15 +3,13 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
-<<<<<<< HEAD
-// 
-=======
 require("dotenv").config();
 // file import area
 
 mongoose.connect("mongodb://localhost/StackDB", () =>
   console.log("connected to StackDB")
 );
+
 
 // use area
 const app = express();

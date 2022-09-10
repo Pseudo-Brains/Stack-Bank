@@ -17,9 +17,10 @@ const logIncontroller = async function (req, res) {
 
      const User = await UserModel.findOne({ email: loginData.email });
      if (!User) return res.status(400).send("wrong email try angin");
-
-    //   const correctPassword = await bcrypt.compare(loginData.password,User.password)    
-    //     if (!correctPassword) return res.status(400).send("wrong password try angin");
+ 
+  console.log(cr);
+      const correctPassword = await bcrypt.compare(loginData.password,User.password)    
+        if (!correctPassword) return res.status(400).send("wrong password try angin");
      
       const token = jwt.sign({_id:User.id}, process.env.TOKEN_SECRET)
 
