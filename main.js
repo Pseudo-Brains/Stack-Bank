@@ -24,9 +24,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const { registerRoute } = require("./route/register");
 const { loginRoute } = require("./route/login");
 const { ForgotRoute} = require("./route/forgetPassword")
+const { ResetPasswordRoute} = require("./route/reset-password")
 
 // Route Middleware
 app.use("/api", registerRoute);
 app.use("/api", loginRoute);
 app.use("/api", ForgotRoute);
+app.use("/api", ResetPasswordRoute);
+
+
+
 app.listen(4040, () => console.log("server is runing"));

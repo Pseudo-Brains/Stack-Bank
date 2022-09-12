@@ -115,8 +115,8 @@ const UserSchema = new Schema({
             min: 11,
             unique: true,
             trim: true,
-          },
-          
+          },    
+    accountDetails:accountDetailsSchema,
     dateOfBirth:{
         type: Date,
         required:true
@@ -129,7 +129,6 @@ const UserSchema = new Schema({
      max:12,
      immutable: true
     },
-    accountDetails:accountDetailsSchema,
     transactionsDetail:[transactionSchema],
     createdAt: {
         type: Date,
@@ -141,7 +140,7 @@ const UserSchema = new Schema({
     }
 
 })
-const UserModel = model("User",UserSchema)
+
 
 //  account Details Schema 
 
@@ -154,11 +153,11 @@ const tokenSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		required: true,
 		ref: "User",
-		unique: true,
 	},
     verified: { type: Boolean, default: false },
 	token: { type: String, required: true },
 	createdAt: { type: Date, default: Date.now, expires: 600},
+    
 });
 
 
@@ -182,8 +181,9 @@ UserSchema.pre("save",function(next){
 })
 
 
-const AccountDetails = model("AccountDetails",accountDetailsSchema)
+const UserModel = model("User",UserSchema)
 
+const AccountDetails = model("AccountDetails",accountDetailsSchema)
 
 const ResetToken = model("ResetToken",tokenSchema)
 
