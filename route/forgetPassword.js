@@ -1,51 +1,49 @@
 const express = require("express")
 const Router = require("express").Router();
 const joi = require("joi")
-const {UserModel} = require("../module/module");
-const {mailsender} = require("../module/sendMailFun");
+
+const {mailsender} = require("../models/sendMailFun");
 const crypto = require("crypto");
-const {TokenForgot}  = require("../module/tokenForgot")
+const {ResetToken,UserModel }  = require("../models/user")
 
 
 Router.post("/reset-password", async (req,res)=>{
   try {  
     
-    const emailSchema = joi.object({
-      email:joi.string().email().required()
-    });
+    // const emailSchema = joi.object({
+    //   email:joi.string().email().required()
+    // });
     
-    const { error} = emailSchema.validate(req.body)
-    if (error) return res.status(400).send({message:error.details[0].message});
+    // const { error} = emailSchema.validate(req.body)
+    // if (error) return res.status(400).send({message:error.details[0].message});
   
     
-    const oldUser = await UserModel.findOne({ email: req.body.email}); 
+    const User = await UserModel.findOne({ email: req.body.email});
+    console.log(User); 
+
+ 
+
+
+
+
     
-    if (!oldUser) return res.status(400).send("Email does not exist")
-    
-    
-    console.log(oldUser._id);
-    
-    let token = await TokenForgot.findById({userId:oldUser._id})
-    if (token) res.status(200).send("not ")
-    console.log(token);
-    
-    if (!token) {
-        token = await new TokenForgot({
-            userId:oldUser._id,
-            token:crypto.randomBytes(18).toString("hex") 
-        }).save()
+    // if (!token) {
+    //     token = await new TokenForgot({
+    //         userId:oldUser._id,
+    //         token:crypto.randomBytes(18).toString("hex") 
+    //     }).save()
         
-    }
+    // }
 
  
    
     
       // const token = jwt.sign({id:oldUser._id},process.env.TOKEN_SECRET,{expiresIn:"10m"}); 
-    const link =`${process.env.BASE_URL}/password-reset/${oldUser._id}/${TokenForgot.token}`
+//     const link =`${process.env.BASE_URL}/password-reset/${oldUser._id}/${TokenForgot.token}`
     
- //    (emailTo, bankEmail, subject, message)
-    await mailsender("atozbasic@gmail.com","typebasic@gmail.com", "Reset your password", link) 
-    res.status(200).send({message:"password reset link sent have being send to your email account"})
+//  //    (emailTo, bankEmail, subject, message)
+//     await mailsender("atozbasic@gmail.com","typebasic@gmail.com", "Reset your password", link) 
+//     res.status(200).send({message:"password reset link sent have being send to your email account"})
  
  
     } catch (error) {

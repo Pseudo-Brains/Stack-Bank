@@ -2,8 +2,8 @@ const express = require("express")
 const joi = require("joi")
 const jwt = require("jsonwebtoken")
 const bcrypt= require("bcrypt")
-const {UserModel}= require("../module/module")
- const {loginValidation} = require("../module/validation")
+const {UserModel}= require("../models/user")
+ const {loginValidation} = require("../models/validation")
 
 const logIncontroller = async function (req, res) {
     

@@ -1,6 +1,87 @@
 const { date, number } = require("joi")
 const mongoose  = require("mongoose")
-const {Schema, Model} = require("mongoose")
+const {Schema, model} = require("mongoose")
+
+//  transaction Schema
+
+const transactionSchema = new Schema({
+    transactionType:{
+        type: String,
+        enum : ['deposit', 'transfer', 'reversal', 'withdrawal'],
+        required: true
+      },
+      amount: {
+        type: Number,
+        required: true,
+        default: 0.00
+      },
+      accountNumber: {
+        type: Number,
+         required: true, 
+      },
+      senderName:{
+        type:String,
+        required:true,
+        trim:true
+      },
+      receiverName:{
+        type:String,
+        required:true,
+        trim:true
+      },
+      balanceBefore: {
+        type: mongoose.Decimal128,
+        required: true,
+      },
+      balanceAfter: {
+        type: mongoose.Decimal128,
+        required: true,
+      },
+      message: {
+         type: String,
+          required: true
+         },
+      createdAt: {
+        type: Date,
+        default: ()=> Date.now()
+    },
+    updatedAt:{
+        type: Date,
+        required: true
+    }
+})
+const accountDetailsSchema = new Schema({
+    userId:{
+        type:Schema.Types.ObjectId,
+        required: true,
+        ref:"User"
+    },
+    balance: {
+        type: mongoose.Decimal128,
+        required:true,
+        trim:true,
+        default: 0.00
+    },
+    totalDeposit:{
+        type:Number,
+        required:true,
+        default: 0.00
+    },
+    totalWithdraw:{
+        type:Number,
+        required:true,
+        default: 0.00
+    },
+    createdAt: {
+        type: Date,
+        default: ()=> Date.now()
+    },
+    updatedAt:{
+        type: Date,
+        required: true
+    }
+})
+
 
 const UserSchema = new Schema({
     firstName: {
@@ -37,24 +118,19 @@ const UserSchema = new Schema({
           },
           
     dateOfBirth:{
-        type: date,
+        type: Date,
         required:true
     },
     accountNumber:{
-     type:number,
+     type:Number,
      unique:true,
      trim:true,
      min:11,
      max:12,
      immutable: true
     },
-    accountDetails:{
-      type: mongoose.Schema.Types.ObjectId,
-      required:true,
-      ref: "AccountDetails",
-      unique: true,
-    },
-    transactionsDetail:[transaction],
+    accountDetails:accountDetailsSchema,
+    transactionsDetail:[transactionSchema],
     createdAt: {
         type: Date,
         default: ()=> Date.now()
@@ -65,83 +141,17 @@ const UserSchema = new Schema({
     }
 
 })
-
+const UserModel = model("User",UserSchema)
 
 //  account Details Schema 
 
-const accountDetailsSchema = new Schema({
-    userId:{
-        type:mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref:"User"
-    },
-    balance: {
-        type: Schema.Types.Decimal128,
-        required:true,
-        trim:true
-    },
-    totalDeposit:{
-        type:number,
-        required:true
-    },
-    totalWithdraw:{
-        type:number,
-        required:true
-    },
-    createdAt: {
-        type: Date,
-        default: ()=> Date.now()
-    },
-    updatedAt:{
-        type: Date,
-        required: true
-    }
-})
 
-//  transaction Schema
-
-const transactionSchema = Schema({
-
-    transactionType:{
-        type: String,
-        enum : ['deposit', 'transfer', 'reversal', 'withdrawal'],
-        required: true
-      },
-      amount: {
-        type: mongoose.Decimal128,
-        required: true,
-        default: 0.00
-      },
-      accountNumber: {
-        type: number,
-        ref: 'AccountDetails'
-      },
-      balanceBefore: {
-        type: mongoose.Decimal128,
-        required: true,
-      },
-      balanceAfter: {
-        type: mongoose.Decimal128,
-        required: true,
-      },
-      message: { type: String, required: true },
-  
-      createdAt: {
-        type: Date,
-        default: ()=> Date.now()
-    },
-    updatedAt:{
-        type: Date,
-        required: true
-    }
-
-})
 
 
 //  Schema for reseting password 
 const tokenSchema = new Schema({
 	userId: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		required: true,
 		ref: "User",
 		unique: true,
@@ -171,10 +181,10 @@ UserSchema.pre("save",function(next){
     next()
 })
 
-const User = Model("User",UserSchema)
-const AccountDetails = Model("AccountDetails",accountDetailsSchema)
+
+const AccountDetails = model("AccountDetails",accountDetailsSchema)
 
 
-const ResetToken = Model("ResetToken",tokenSchema)
+const ResetToken = model("ResetToken",tokenSchema)
 
-module.exports ={User,AccountDetails,ResetToken}
+module.exports ={UserModel,AccountDetails,ResetToken}
