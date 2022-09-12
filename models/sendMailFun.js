@@ -3,7 +3,7 @@
 
 
 var nodemailer = require('nodemailer');
-const module = require('./module');
+
 
 const mailsender = async (emailTo, bankEmail, subject, message) => { 
     var transporter = nodemailer.createTransport({
@@ -23,9 +23,9 @@ const mailsender = async (emailTo, bankEmail, subject, message) => {
       
       transporter.sendMail(mailOptions, function(error, info){
         if (error) {
-          console.log(error);
+        return  console.log(error);
         } else {
-          console.log('Email sent: ' + info.response);
+          return  console.log('Email sent: ' + info.response);
         }
       });
 }
