@@ -51,6 +51,7 @@ const transactionSchema = new Schema({
   },
 });
 const accountDetailsSchema = new Schema({
+<<<<<<< HEAD
   userId: {
     type: Schema.Types.ObjectId,
     required: true,
@@ -80,6 +81,115 @@ const accountDetailsSchema = new Schema({
     type: Date,
     required: true,
   },
+=======
+    userId:{
+        type:Schema.Types.ObjectId,
+        required: true,
+        ref:"User"
+    },
+    balance: {
+        type: mongoose.Decimal128,
+        required:true,
+        trim:true,
+        default: 0.00
+    },
+    totalDeposit:{
+        type:Number,
+        required:true,
+        default: 0.00
+    },
+    totalWithdraw:{
+        type:Number,
+        required:true,
+        default: 0.00
+    },
+    createdAt: {
+        type: Date,
+        default: ()=> Date.now()
+    },
+    updatedAt:{
+        type: Date,
+        required: true
+    }
+})
+
+
+const UserSchema = new Schema({
+    firstName: {
+         type: String,
+         required: true,
+         trim: true,
+         min:2
+    },
+	lastName: {
+         type: String,
+         required: true ,
+         trim: true,
+         min: 2
+        },
+	email: {
+         type: String, 
+         required: true,
+         unique: true,
+         trim: true,
+         min: 6,
+         lowercase: true,
+     },
+	password: {
+         type: String,
+          required: true,
+          min: 6,
+          max:25
+         },
+     phone: {
+            type: Number,
+            min: 11,
+            unique: true,
+            trim: true,
+          },    
+    accountDetails:accountDetailsSchema,
+    dateOfBirth:{
+        type: Date,
+        required:true
+    },
+    accountNumber:{
+     type:Number,
+     unique:true,
+     trim:true,
+     min:11,
+     max:12,
+     immutable: true
+    },
+    transactionsDetail:[transactionSchema],
+    createdAt: {
+        type: Date,
+        default: ()=> Date.now()
+    },
+    updatedAt:{
+        type: Date,
+        required: true
+    }
+
+})
+
+
+//  account Details Schema 
+
+
+
+
+//  Schema for reseting password 
+const tokenSchema = new Schema({
+	userId: {
+		type: Schema.Types.ObjectId,
+		required: true,
+		ref: "User",
+	},
+    verified: { type: Boolean, default: false },
+	token: { type: String, required: true },
+	createdAt: { type: Date, default: Date.now, expires: 600},
+    
+>>>>>>> 70538d99ed5f633dda2575f4b2b8fdf7474d3873
 });
 
 const UserSchema = new Schema({
@@ -183,6 +293,16 @@ UserSchema.pre("save", function (next) {
 
 const AccountDetails = model("AccountDetails", accountDetailsSchema);
 
+<<<<<<< HEAD
 const ResetToken = model("ResetToken", tokenSchema);
 
 module.exports = { UserModel, AccountDetails, ResetToken };
+=======
+const UserModel = model("User",UserSchema)
+
+const AccountDetails = model("AccountDetails",accountDetailsSchema)
+
+const ResetToken = model("ResetToken",tokenSchema)
+
+module.exports ={UserModel,AccountDetails,ResetToken}
+>>>>>>> 70538d99ed5f633dda2575f4b2b8fdf7474d3873
