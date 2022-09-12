@@ -17,8 +17,7 @@ Router.post("/forgot-password", async (req,res)=>{
     
     const { error} = emailSchema.validate(req.body)
     if (error) return res.status(400).send({message:error.details[0].message});
-  
-    
+      
     const user = await UserModel.findOne({ email: req.body.email});
      if (!user) return res.status(400).send({message:"User does not exist"});
 
@@ -31,10 +30,7 @@ Router.post("/forgot-password", async (req,res)=>{
         }).save()
     }
     
- 
-    
-      // const token = jwt.sign({id:oldUser._id},process.env.TOKEN_SECRET,{expiresIn:"10m"}); 
-    const link =`${process.env.BASE_URL}/password-reset/${user._id}/${token.token}`
+    const link =`${process.env.BASE_URL}/api/password-reset/${user._id}/${token.token}`
     
     console.log(link,user.email);
    
@@ -42,12 +38,8 @@ Router.post("/forgot-password", async (req,res)=>{
        
      mailsender(user.email,"Reset your password",link).then(result=> console.log(result)).catch((error)=> console.log(error));
 
-
-
-
     res.status(200).send({message:"password reset link sent have being send to your email account"})
- 
- 
+
     } catch (error) {
      res.status(500).send({message: error})
  }

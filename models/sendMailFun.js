@@ -2,16 +2,9 @@
 const nodemailer = require("nodemailer");
 const {google} = require("googleapis")
 
-const CLIENT_ID = "85845321380-9t05l0n1tl188q1t1s3g9s8vq0bq53qe.apps.googleusercontent.com"
-const CLIENT_SECRET ="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"
-const REDIRECT_URL="https://developers.google.com/oauthplayground"
-const REFRESH_TOKEN ="1//04zOR4CcuThgnCgYIARAAGAQSNwF-L9IrFzVbPdfoSvmCLTSMGSjp2fYjnGe4UYOlpb6QWz40tNLdKGOBXJmwwytaXOiaqP8wa-c"
-
-
-
-const oAuth2client = new google.auth.OAuth2(CLIENT_ID,CLIENT_SECRET,REDIRECT_URL)
+const oAuth2client = new google.auth.OAuth2(process.env.CLIENT_ID,process.env.CLIENT_SECRET,process.env.REDIRECT_URL)
  
-oAuth2client.setCredentials({refresh_token:REFRESH_TOKEN })
+oAuth2client.setCredentials({refresh_token:process.env.REFRESH_TOKEN })
 
   async function mailsender (emailTo,subject, message)  { 
  
@@ -25,11 +18,11 @@ oAuth2client.setCredentials({refresh_token:REFRESH_TOKEN })
         
         auth: { 
           type:"OAuth2",
-          user: 'pseudobrains0@gmail.com',
-          clientId: CLIENT_ID,
-          clientSecret: CLIENT_SECRET,
-          refreshToken: REFRESH_TOKEN,
-          accessToken: accsessToken ,
+          user: process.env.EMAIL,
+          clientId: process.env.CLIENT_ID,
+          clientSecret: process.env.CLIENT_SECRET,
+          refreshToken: process.env.REFRESH_TOKEN,
+          accessToken: process.env.accsessToken ,
           // pass:"app ",
         }
       });
