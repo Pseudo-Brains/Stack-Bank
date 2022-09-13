@@ -30,15 +30,21 @@ Router.post("/forgot-password", async (req,res)=>{
         }).save()
     }
     
-    const link =`${process.env.BASE_URL}/api/password-reset/${user._id}/${token.token}`
+    const link =`${process.env.BASE_URL}/api/reset-password/${user._id}/${token.token}`
     
     console.log(link,user.email);
    
        //how the params on the mailsender emailTo,   subject,   message
        
-     mailsender(user.email,"Reset your password",link).then(result=> console.log(result)).catch((error)=> console.log(error));
+     mailsender(user.email,"Reset your password",link).then(result=>
+      //  send message 
+      res.status(200).send({message:"password reset link sent have being send to your email account", result})
+       ).catch((error)=> 
+           //  send message 
+        res.status(400).send({message:"connect to internet",error: error})
+       );
 
-    res.status(200).send({message:"password reset link sent have being send to your email account"})
+
 
     } catch (error) {
      res.status(500).send({message: error})

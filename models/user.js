@@ -50,6 +50,7 @@ const transactionSchema = new Schema({
         required: true
     }
 })
+
 const accountDetailsSchema = new Schema({
     userId:{
         type:Schema.Types.ObjectId,
@@ -110,18 +111,18 @@ const UserSchema = new Schema({
           min: 6,
           max:25
          },
-     phone: {
-            type: Number,
-            min: 11,
-            unique: true,
-            trim: true,
-          },    
+    phone: {
+        type: Number,
+        min: 11,
+        unique: true,
+        trim: true,
+        },    
     accountDetails:accountDetailsSchema,
     dateOfBirth:{
         type: Date,
         required:true
     },
-    accountNumber:{
+    accountnumber:{
      type:Number,
      unique:true,
      trim:true,

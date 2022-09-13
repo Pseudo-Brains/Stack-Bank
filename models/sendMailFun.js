@@ -11,11 +11,10 @@ oAuth2client.setCredentials({refresh_token:process.env.REFRESH_TOKEN })
     const accsessToken = await oAuth2client.getAccessToken()
 
     let transporter = nodemailer.createTransport({
-        // service: 'gmail',
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
-        
+        service: 'gmail',
+        // host: "smtp.gmail.com",
+        // port: 465,
+        // secure: true,
         auth: { 
           type:"OAuth2",
           user: process.env.EMAIL,

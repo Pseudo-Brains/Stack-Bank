@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken")
 const bcrypt= require("bcrypt")
 const {UserModel}= require("../models/user")
  const {loginValidation} = require("../models/validation")
+ const crypto = require("crypto")
 
 const logIncontroller = async function (req, res) {
     
@@ -30,10 +31,7 @@ const logIncontroller = async function (req, res) {
     // const savedUser = await user.save();
     // console.log(savedUser);
 
-
-
-
-
+  
 
     try {
         const loginData = {

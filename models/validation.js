@@ -1,8 +1,5 @@
 const Joi = require("joi");
 
-
-
-
 const loginValidation = data =>{
   const Schema = Joi.object({
     email: Joi.string()
@@ -14,6 +11,5 @@ const loginValidation = data =>{
   });
   return Schema.validate(data,{abortEarly:false})
 }
-
 
 module.exports = {loginValidation };

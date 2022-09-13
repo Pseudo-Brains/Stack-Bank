@@ -3,8 +3,14 @@ const { UserModel } = require("../models/user");
 const { registerValidation } = require("../models/validation");
 const bcrypt = require("bcrypt");
 
+
 const registerControllerPost = async (req, res) => {
   req.send("gdhkj,m")
+  
+
+  
+
+
   // const { error } = registerValidation(req.body);
 
   // if (error) return res.status(400).send(error.details[0].message);
