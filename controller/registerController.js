@@ -3,6 +3,7 @@ const { UserModel } = require("../models/user");
 const { RegisterValidation } = require("../models/validation");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
+// const emaimVal = require("deep-email-validator");
 
 const registerControllerPost = async (req, res) => {
   // req.send("gdhkj,m")
@@ -10,14 +11,13 @@ const registerControllerPost = async (req, res) => {
 
   if (error) return res.status(400).send(error.details[0].message);
 
-  const salt = await bcrypt.genSalt(10);
-  const harshPassword = await bcrypt.hash(req.body.password, salt);
-
   const emailExist = await UserModel.findOne({ email: req.body.email });
   if (emailExist) return res.status(400).send("Email already exist😒😒");
 
   const phoneNoExist = await UserModel.findOne({ phone: req.body.phone });
   if (phoneNoExist) return res.status(400).send("Number already exist☑️☑️");
+  const salt = await bcrypt.genSalt(10);
+  const harshPassword = await bcrypt.hash(req.body.password, salt);
 
   const user = new UserModel({
     firstname: req.body.firstname,
