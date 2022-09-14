@@ -50,6 +50,7 @@ const transactionSchema = new Schema({
     required: true,
   },
 });
+
 const accountDetailsSchema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
@@ -83,13 +84,13 @@ const accountDetailsSchema = new Schema({
 });
 
 const UserSchema = new Schema({
-  firstname: {
+  firstName: {
     type: String,
     required: true,
     trim: true,
     min: 2,
   },
-  lastname: {
+  lastName: {
     type: String,
     required: true,
     trim: true,
@@ -115,12 +116,27 @@ const UserSchema = new Schema({
     unique: true,
     trim: true,
   },
-  emailToken: {
-    type: String,
+  accountDetails: accountDetailsSchema,
+  dateOfBirth: {
+    type: Date,
+    required: true,
   },
-  isVerified: {
-    type: Boolean,
-    default: false,
+  accountnumber: {
+    type: Number,
+    unique: true,
+    trim: true,
+    min: 11,
+    max: 12,
+    immutable: true,
+  },
+  transactionsDetail: [transactionSchema],
+  createdAt: {
+    type: Date,
+    default: () => Date.now(),
+  },
+  updatedAt: {
+    type: Date,
+    required: true,
   },
 
   dateOfBirth: {
@@ -132,7 +148,7 @@ const UserSchema = new Schema({
     unique: true,
     trim: true,
     min: 11,
-    max: 12,
+    // max: 20,
     immutable: true,
   },
   accountDetails: accountDetailsSchema,
@@ -147,7 +163,6 @@ const UserSchema = new Schema({
     default: new Date(),
   },
 });
-const UserModel = model("User", UserSchema);
 
 //  account Details Schema
 
@@ -157,7 +172,6 @@ const tokenSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: true,
     ref: "User",
-    unique: true,
   },
   verified: { type: Boolean, default: false },
   token: { type: String, required: true },
@@ -181,15 +195,12 @@ UserSchema.pre("save", function (next) {
   next();
 });
 
+const UserModel = model("User", UserSchema);
+
 const AccountDetails = model("AccountDetails", accountDetailsSchema);
 
 const ResetToken = model("ResetToken", tokenSchema);
 
 module.exports = { UserModel, AccountDetails, ResetToken };
-// const UserModel = model("User",UserSchema)
-//
-// const AccountDetails = model("AccountDetails",accountDetailsSchema)
 
-// const ResetToken = model("ResetToken",tokenSchema)
-
-module.exports = { UserModel, AccountDetails, ResetToken };
+// const UserModel = model("User", UserSchema);
