@@ -6,7 +6,11 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 // file import area
 
-mongoose.connect("mongodb://localhost/StackDB", () =>
+mongoose.connect("mongodb://localhost/StackDB",{
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useUnifiedTopology: true
+}, () =>
   console.log("connected to StackDB")
 );
 

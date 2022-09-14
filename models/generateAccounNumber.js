@@ -17,7 +17,6 @@ const  UserModel  = require("../models/user")
     let TempAccNum =  Number([...nums].join("").split("").splice(0,11).join(""));
         
         // test data
-
       // AccountNum = useData.find((item)=> item === TempAccNum)
          AccountNum = await usermod.findOne({accountNumber:TempAccNum})
       if (!AccountNum){

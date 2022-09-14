@@ -59,6 +59,6 @@ const logIncontroller = async function (req, res) {
     }
 }
 module.exports= {
-    logIncontroller: logIncontroller
+    logIncontroller
 }
 

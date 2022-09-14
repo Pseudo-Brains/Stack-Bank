@@ -5,7 +5,7 @@ const {google} = require("googleapis")
 const oAuth2client = new google.auth.OAuth2(process.env.CLIENT_ID,process.env.CLIENT_SECRET,process.env.REDIRECT_URL)
  
 oAuth2client.setCredentials({refresh_token:process.env.REFRESH_TOKEN })
-
+    
   async function mailsender (emailTo,subject, message)  { 
  
     const accsessToken = await oAuth2client.getAccessToken()
@@ -21,8 +21,7 @@ oAuth2client.setCredentials({refresh_token:process.env.REFRESH_TOKEN })
           clientId: process.env.CLIENT_ID,
           clientSecret: process.env.CLIENT_SECRET,
           refreshToken: process.env.REFRESH_TOKEN,
-          accessToken: process.env.accsessToken ,
-          // pass:"app ",
+          accessToken: accsessToken,
         }
       });
  
@@ -36,7 +35,10 @@ oAuth2client.setCredentials({refresh_token:process.env.REFRESH_TOKEN })
                  <h4> ${message}</h4> 
                  <br/>
                  <hr/>
-                 <p>   Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cumque vel placeat perspiciatis impedit ducimus ipsam nemo asperiores, perferendis ullam quis voluptate! Mollitia ad sapiente quidem numquam blanditiis quam temporibus optio.</p>
+                 <p> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cumque vel placeat perspiciatis impedit ducimus ipsam nemo asperiores, perferendis ullam quis voluptate! Mollitia ad sapiente quidem numquam blanditiis quam temporibus optio.</p>
+                 <br/>
+                 <hr/>
+                 <br/>
                  <h5> From STACK BANK 📚</h5> 
          </div> `
       };
