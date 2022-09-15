@@ -1,12 +1,27 @@
 
-const  UserModel  = require("../models/user")
 
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const  {UserModel}  = require("../models/user")
+
 // test data
 
 // let useData = [65782556139,41178855357,71324565557,87735695034,31982444255,23310663125,11666111560,24445592087,31740758610,34910733919,52839248817,27750686746,52056704112,76027423034,15970533774,23352887938,97786253772,43437498233,87183167749,34541753044]
 
-  async function generateAccoNum(usermod) {
+  async function generateAccoNum() {
   let AccountNum = null
   do {
     const nums = new Set();
@@ -18,7 +33,7 @@ const  UserModel  = require("../models/user")
         
         // test data
       // AccountNum = useData.find((item)=> item === TempAccNum)
-         AccountNum = await usermod.findOne({accountNumber:TempAccNum})
+         AccountNum = await UserModel.findOne({accountnumber:TempAccNum})
       if (!AccountNum){
         return TempAccNum
        }

@@ -3,14 +3,12 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
+const jwt = require("jsonwebtoken")
+
 require("dotenv").config();
 // file import area
 
-mongoose.connect("mongodb://localhost/StackDB",{
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useUnifiedTopology: true
-}, () =>
+mongoose.connect("mongodb://localhost/StackDB", () =>
   console.log("connected to StackDB")
 );
 
@@ -22,6 +20,8 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+
 
 
 //routes

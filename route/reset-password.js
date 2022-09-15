@@ -11,18 +11,18 @@ const {ResetToken,UserModel }  = require("../models/user")
 
 Router.get("/reset-password/:id/:token",async (req,res)=>{    
 try {
-  const id =  req.params.id
-    const user = UserModel.findById({_id:id})
+  const id =  req.params.id.toString()
+    const user = UserModel.findOne({_id:id})
 
     if(!user) return res.status(401).send({message:"invaild link"});
     
-    console.log(user);
-
-   let token = ResetToken.findOne({
-    userId:id,
-    token:req.params.token
-   });
-   if (!token) return res.status(400).send({message:"invaild link"})
+    
+    let token = ResetToken.findOne({
+      userId:req.params.id,
+      token:req.params.token
+    });
+    console.log(token);
+    if (!token) return res.status(400).send({message:"invaild link"})
 
    res.status(200).send({message:"vaild url", id:id})
     
@@ -33,59 +33,53 @@ try {
 
 Router.post("/reset-password/:id/:token", async (req,res)=>{    
     try {
-      const id =  req.params.id
-      const Ptoken = req.params.token
-
-        const user = await UserModel.findById({_id:id})
-    
-        if(!user) return res.status(401).send({message:"invaild link"});
-
-         let token = await ResetToken.findOne({
-           userId:id,
-           token: Ptoken
-         });
-
-         
-         if (!token) return res.status(400).send({message:"invaild link"})
+      const id =  req.params.id.toString()
+      const Ptoken = req.params.token.toString()
+      
+      const user = await UserModel.findOne({_id: id})
+      if(!user) return res.status(401).send({message:"invaild link"});
+      console.log("transaction");
         
-         
-         if (token.verified)  token.verified = true 
-
-
-         const PasswordSchema = joi.object({
-          email:joi.string().password().min(6).required()
+        let token = await ResetToken.findOne({
+          userId: id,
+          token: Ptoken
         });
+        // console.log(token);
         
-        const { error} = PasswordSchema.validate(req.body)
-        if (error) return res.status(400).send({message:error.details[0].message});
-         
-         console.log(req.body.password);
-         const salt = await bcrypt.genSalt(10);
-         console.log(token);
+        
+
+        if (!token) return res.status(400).send({message:"invaild link"})
+        
+        // if (!token.verified)  token.verified = true 
+        
+        // const PasswordSchema = joi.object({
+        //   email:joi.string().password().min(6).required()
+        // });
+        
+        // const { error} = PasswordSchema.validate({user.password})
+        
+        // if (error) return res.status(400).send({message:error.details[0].message});
+        
+        
+        const salt = await bcrypt.genSalt(10);
+        
+        
         const hashPassword = await bcrypt.hash(req.body.password,salt);
+        
+        await UserModel.findOneAndUpdate({_id: id},{password: hashPassword})
+              
+          //  user.password = hashPassword;
+          //  await user.save()      
+        
+         console.log("data111111111");
 
-         console.log(hashPassword);
-
-         user.password = hashPassword
-         await user.save()
-
-      //  await UserModel.findById(id,(err,Puser)=>{
-      //     if (err) return err
-      //     Puser.set({password:hashPassword});
-      //     Puser.save((err,doc)=>{
-      //       console.log(doc);
-      //       if (err) return err
-      //       res.status(200).send({message: "reset is success"})
-      //     })
-      //   })
-
-       await token.remove()
-
-       res.status(200).send({message:"success"})  
-    } catch (error) {
+         await ResetToken.findOneAndDelete({token: token.tokens})
+        
+        res.status(200).send({message:"success"})  
+      } catch (error) {
         res.status(500).send({message:error})
-    }})
-    
+      }})
+      
 
     module.exports={
     ResetPasswordRoute: Router

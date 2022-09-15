@@ -5,46 +5,49 @@ const joi = require("joi")
 const {mailsender} = require("../models/sendMailFun");
 
 const crypto = require("crypto");
-const {ResetToken,UserModel }  = require("../models/user")
+
+const { UserModel,ResetToken} = require("../models/user");
 
 
 Router.post("/forgot-password", async (req,res)=>{
   try {  
-    
     const emailSchema = joi.object({
       email:joi.string().email().required()
     });
     
     const { error} = emailSchema.validate(req.body)
     if (error) return res.status(400).send({message:error.details[0].message});
-      
-    const user = await UserModel.findOne({ email: req.body.email});
-     if (!user) return res.status(400).send({message:"User does not exist"});
 
+    
+    const user = await UserModel.findOne({ email: req.body.email});
+
+    
+    if (!user) return res.status(400).send({message:"User does not exist"});
+    
+    
     let token = await ResetToken.findOne({ userId: user._id });
-    console.log(token);
+    
     if (!token) {
-            token = await new ResetToken({
-            userId: user._id,
-            token:crypto.randomBytes(20).toString("hex") 
-        }).save()
+      token = await new ResetToken({
+        userId: user._id,
+        token:crypto.randomBytes(20).toString("hex") 
+      }).save()
     }
+    
+    console.log('oooooaoo',user);
     
     const link =`${process.env.BASE_URL}/api/reset-password/${user._id}/${token.token}`
     
-    console.log(link,user.email);
    
        //how the params on the mailsender emailTo,   subject,   message
        
-     mailsender(user.email,"Reset your password",link).then(result=>
+     mailsender(req.body.email,"Reset your password",link).then(result=>
       //  send message 
       res.status(200).send({message:"password reset link sent have being send to your email account", result})
        ).catch((error)=> 
            //  send message 
         res.status(400).send({message:"connect to internet",error: error})
        );
-
-
 
     } catch (error) {
      res.status(500).send({message: error})
