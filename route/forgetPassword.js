@@ -17,8 +17,16 @@ Router.post("/forgot-password", async (req,res)=>{
     
     const { error} = emailSchema.validate(req.body)
     if (error) return res.status(400).send({message:error.details[0].message});
+<<<<<<< HEAD
     
     const user = await UserModel.findOne({ email: req.body.email});
+=======
+
+    
+    const user = await UserModel.findOne({ email: req.body.email});
+
+    
+>>>>>>> f4fc648169b94823e0bf8817a8eccf68f2bdcad6
     if (!user) return res.status(400).send({message:"User does not exist"});
     
     
@@ -31,6 +39,10 @@ Router.post("/forgot-password", async (req,res)=>{
       }).save()
     }
     
+<<<<<<< HEAD
+=======
+    console.log('oooooaoo',user);
+>>>>>>> f4fc648169b94823e0bf8817a8eccf68f2bdcad6
     
     const link =`${process.env.BASE_URL}/api/reset-password/${user._id}/${token.token}`
     
@@ -44,8 +56,6 @@ Router.post("/forgot-password", async (req,res)=>{
            //  send message 
         res.status(400).send({message:"connect to internet",error: error})
        );
-
-
 
     } catch (error) {
      res.status(500).send({message: error})
