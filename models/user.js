@@ -15,7 +15,7 @@ const transactionSchema = new Schema({
     required: true,
     default: 0.0,
   },
-  accountNumber: {
+  accountnumber: {
     type: Number,
     required: true,
   },
@@ -84,13 +84,13 @@ const accountDetailsSchema = new Schema({
 });
 
 const UserSchema = new Schema({
-  firstName: {
+  firstname: {
     type: String,
     required: true,
     trim: true,
     min: 2,
   },
-  lastName: {
+  lastname: {
     type: String,
     required: true,
     trim: true,
@@ -121,12 +121,18 @@ const UserSchema = new Schema({
     type: Date,
     required: true,
   },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  emailToken: {
+    type: String,
+    required: true,
+  },
   accountnumber: {
     type: Number,
     unique: true,
-    trim: true,
     min: 11,
-    max: 12,
     immutable: true,
   },
   transactionsDetail: [transactionSchema],
@@ -136,31 +142,7 @@ const UserSchema = new Schema({
   },
   updatedAt: {
     type: Date,
-    required: true,
-  },
-
-  dateOfBirth: {
-    type: Date,
-    required: true,
-  },
-  accountNumber: {
-    type: Number,
-    unique: true,
-    trim: true,
-    min: 11,
-    // max: 20,
-    immutable: true,
-  },
-  accountDetails: accountDetailsSchema,
-  transactionsDetail: [transactionSchema],
-  createdAt: {
-    type: Date,
-    default: () => Date.now(),
-  },
-  updatedAt: {
-    type: Date,
-    required: true,
-    default: new Date(),
+    default: Date.now(),
   },
 });
 
@@ -168,6 +150,14 @@ const UserSchema = new Schema({
 
 //  Schema for reseting password
 const tokenSchema = new Schema({
+  userId: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+  verified: { type: Boolean, default: false },
+  token: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now, expires: 600 },
   userId: {
     type: Schema.Types.ObjectId,
     required: true,
@@ -199,8 +189,8 @@ const UserModel = model("User", UserSchema);
 
 const AccountDetails = model("AccountDetails", accountDetailsSchema);
 
-const ResetToken = model("ResetToken", tokenSchema);
+module.exports = { UserModel, AccountDetails };
 
-module.exports = { UserModel, AccountDetails, ResetToken };
+// const ResetToken = model("ResetToken", tokenSchema);
 
-// const UserModel = model("User", UserSchema);
+// module.exports = { UserModel, AccountDetails, ResetToken };
