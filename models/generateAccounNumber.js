@@ -1,24 +1,4 @@
 
-<<<<<<< HEAD
-const  {UserModel}  = require("../models/user")
-=======
->>>>>>> f4fc648169b94823e0bf8817a8eccf68f2bdcad6
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const  {UserModel}  = require("../models/user")
 
 // test data
