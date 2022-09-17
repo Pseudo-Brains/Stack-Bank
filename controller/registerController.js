@@ -1,12 +1,13 @@
 // const express = require("express");
-const { UserModel } = require("../models/user");
+const { UserModel,AccountDetails } = require("../models/user");
 const { RegisterValidation } = require("../models/validation");
 const bcrypt = require("bcrypt");
 const { generateAccoNum} = require("../models/generateAccounNumber")
 const crypto = require("crypto");
+const { object } = require("joi");
 
 const registerControllerPost = async (req, res) => {
-  // req.send("gdhkj,m")
+  try {
   const { error } = RegisterValidation(req.body);
 
   if (error) return res.status(400).send(error.details[0].message);
@@ -38,14 +39,24 @@ const registerControllerPost = async (req, res) => {
     emailToken: crypto.randomBytes(64).toString("hex"),
     isVerfied: false,
   });
-  const savedUser = await user.save();
-  res.send(savedUser);
-  // try {
-  // } catch (err) {
-  //   res.status(400).send(err);
-  // }
+  const savedUser = await user.save( async(err,user)=>{
+      if(err)return err;
+      AccountDetails.create({
+        userId:user._id,
+      },async function (err,userDoc) {
+        if(err) return err;
+      await UserModel.findOneAndUpdate({_id:user._id},{accountDetails: userDoc._id })
+       return "success"
+     });
+     res.status(200).send({message:"user is successful create"});
+  });
+
+  
+  } catch (err) {
+    res.status(400).send(err);
+  }
 };
 
 module.exports = {
-  registerControllerPost: registerControllerPost,
+   registerControllerPost
 };

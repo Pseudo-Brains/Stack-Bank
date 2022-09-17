@@ -14,9 +14,12 @@ const transferController = async function (req, res) {
 
    console.log(Receiver);
   
-   const randomStr = () => require('crypto').randomBytes(32).toString('hex');
-     
-   console.log(randomStr());
+      // userId
+    // balance
+    // totalDeposit: 
+    // totalWithdraw: 
+       
+  
 
   //  const id = req.query.id
   //  const email = req.g
@@ -27,13 +30,7 @@ const transferController = async function (req, res) {
     
     
       
-    // userId
-    // balance
-    // totalDeposit: 
-    // totalWithdraw: 
-    
-    
-
+ 
     
 
   //  const sender = await UserModel(req.body.)
