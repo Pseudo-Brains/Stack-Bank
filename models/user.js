@@ -76,11 +76,10 @@ const accountDetailsSchema = new Schema({
   createdAt: {
     type: Date,
     default: () => Date.now(),
+    required:true,
+    immutable:true
   },
-  updatedAt: {
-    type: Date,
-    required: true,
-  },
+  updated_at: { type: Date }
 });
 
 const UserSchema = new Schema({
@@ -116,7 +115,10 @@ const UserSchema = new Schema({
     unique: true,
     trim: true,
   },
-  accountDetails: accountDetailsSchema,
+  accountDetails: {
+    type: Schema.Types.ObjectId,
+    ref: "AccountDetails",
+  },
   dateOfBirth: {
     type: Date,
     required: true,

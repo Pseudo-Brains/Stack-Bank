@@ -3,7 +3,7 @@ const express = require("express");
 const joi = require("joi")
 const jwt = require("jsonwebtoken")
 const bcrypt= require("bcrypt")
-const {UserModel}= require("../models/user")
+const {UserModel,AccountDetails}= require("../models/user")
  const {loginValidation} = require("../models/validation")
  const crypto = require("crypto")
  const {EncryptUserInfo} = require("../util/encrypt")
@@ -34,10 +34,7 @@ const logIncontroller = async function (req, res) {
       const userData={
         email:User.email,
         id:User._id 
-      }
-
-       console.log(userData);
-
+      }    
    
        const  SecretUserInfo=EncryptUserInfo(JSON.stringify(userData))
 
