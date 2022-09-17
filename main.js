@@ -24,11 +24,13 @@ const { registerRoute } = require("./route/register");
 const { loginRoute } = require("./route/login");
 const { ForgotRoute} = require("./route/forgetPassword")
 const { ResetPasswordRoute} = require("./route/reset-password")
+const {transferRoute} = require("./route/transfer")
 
 // Route Middleware
 app.use("/api", registerRoute);
 app.use("/api", loginRoute);
 app.use("/api", ForgotRoute);
 app.use("/api", ResetPasswordRoute);
+app.use("/api", transferRoute);
 
 app.listen(4040, () => console.log("server is runing"));

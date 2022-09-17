@@ -3,10 +3,8 @@ const express = require("express");
 const jwt = require("jsonwebtoken")
 
  module.exports= function(req,res,next) {
-    const token = req.header(token);
-     
+    const token = req.header("token");
     
-  
     if (!token) return res.status(401).send({message:"user is not login try and login"})   
   
         try {  
