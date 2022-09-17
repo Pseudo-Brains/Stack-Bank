@@ -3,16 +3,28 @@ const express = require("express");
 const { UserModel, } = require("../models/user");
 
 const transferController = async function (req, res) {
-  
+  // console.log(req.body);
+  // console.log(req.header("id"));
+  // console.log(req.header("token"));
+  // console.log(req.header("email"));
+  console.log(req.headers.email);
+  console.log(req.body.accountnumber);
   const Receiver = await UserModel.findOne({accountnumber:req.body.accountnumber})
    if(!Receiver) return res.status(400).send({meassage:"Account Number doesn't Exist"})
+
+   console.log(Receiver);
+  
+   const randomStr = () => require('crypto').randomBytes(32).toString('hex');
      
-   const id = "6321e9a79b00e0ed56800920"
-    // const user = sessionStorage.getItem("userIfon.Id");
+   console.log(randomStr());
+
+  //  const id = req.query.id
+  //  const email = req.g
     
     
-    const user = UserModel.findOne({_id:id,email:email})
-     UserModel.findByIdAndUpdate()
+  
+
+    
     
       
     // userId
@@ -48,4 +60,8 @@ const transferController = async function (req, res) {
 
       
     
+}
+
+module.exports ={
+  transferController
 }

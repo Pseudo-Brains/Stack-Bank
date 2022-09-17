@@ -6,6 +6,7 @@ const bcrypt= require("bcrypt")
 const {UserModel}= require("../models/user")
  const {loginValidation} = require("../models/validation")
  const crypto = require("crypto")
+ const {EncryptUserInfo} = require("../util/encrypt")
 
 
 const logIncontroller = async function (req, res) {
@@ -19,7 +20,7 @@ const logIncontroller = async function (req, res) {
     const { error } = loginValidation(loginData);
 
       if (error) return res.status(400).send(error.details);
-         console.log(error);
+        
      const User = await UserModel.findOne({ email: loginData.email });
       
      if (!User) return res.status(400).send("wrong email try angin");
@@ -29,9 +30,22 @@ const logIncontroller = async function (req, res) {
      
       const token = jwt.sign({_id:User.id}, process.env.TOKEN_SECRET)
            
-      await UserModel.updateOne({email:loginData.email},{token:token});
+      // await UserModel.updateOne({email:loginData.email},{token:token});
+      const userData={
+        email:User.email,
+        id:User._id 
+      }
 
-      return res.status(200).send({token:token,id:User._id,name:User.lastName,email:User.email})   
+       console.log(userData);
+
+   
+       const  SecretUserInfo=EncryptUserInfo(JSON.stringify(userData))
+
+       console.log(SecretUserInfo);
+      
+
+      return res.status(200).send({token:token,name:User.lastname,accountnumber:User.accountnumber,SecUSerInfo:SecretUserInfo})
+      
     } catch (error) {
       return res.status(200).send(error)
 
