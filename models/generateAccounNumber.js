@@ -12,9 +12,7 @@ const  {UserModel}  = require("../models/user")
     while(nums.size < 7) {
       nums.add(Math.floor(Math.random() * 80) + 11);
     }
-    
-    let TempAccNum =  Number([...nums].join("").split("").splice(0,11).join(""));
-        
+   let TempAccNum =  Number([...nums].join("").split("").splice(0,11).join(""));    
         // test data
       // AccountNum = useData.find((item)=> item === TempAccNum)
          AccountNum = await UserModel.findOne({accountnumber:TempAccNum})

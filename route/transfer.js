@@ -1,12 +1,15 @@
-
-const Route = require("express").Router()
+const Route = require("express").Router();
+const {Authtoken} = require("../middlewares/authUser")
 const {AuthUserDetail} = require("../middlewares/AuthUserDetail")
+const  {transfercontroller} = require("../controller/transfercontroller")
 
-const {transferController} = require("../controller/transferController")
 
-Route.post("/transfer",transferController)
+
+Route.post("/transfer",Authtoken, AuthUserDetail,transfercontroller)
 
 module.exports ={
-    transferRoute: Route
+   transferRoute:Route
 }
+
+
 

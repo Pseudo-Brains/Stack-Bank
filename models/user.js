@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 const { Schema, model } = require("mongoose");
 
 //  transaction Schema
-
+// "deposit", "transfer", "reversal", "withdrawal"
 const transactionSchema = new Schema({
   transactionType: {
     type: String,
-    enum: ["deposit", "transfer", "reversal", "withdrawal"],
+    enum: ["credit","debit"],
     required: true,
   },
   amount: {
@@ -15,8 +15,8 @@ const transactionSchema = new Schema({
     required: true,
     default: 0.0,
   },
-  accountnumber: {
-    type: Number,
+  transactionID: {
+    type: String,
     required: true,
   },
   senderName: {
@@ -58,19 +58,17 @@ const accountDetailsSchema = new Schema({
     ref: "User",
   },
   balance: {
-    type: mongoose.Decimal128,
+    type: Number,
     required: true,
     trim: true,
     default: 0.0,
   },
   totalDeposit: {
     type: Number,
-    required: true,
     default: 0.0,
   },
   totalWithdraw: {
     type: Number,
-    required: true,
     default: 0.0,
   },
   createdAt: {
@@ -137,7 +135,7 @@ const UserSchema = new Schema({
     min: 11,
     immutable: true,
   },
-  transactionsDetail: [transactionSchema],
+  transactionsDetails: [transactionSchema],
   createdAt: {
     type: Date,
     default: () => Date.now(),
@@ -157,7 +155,7 @@ const tokenSchema = new Schema({
     required: true,
     ref: "User",
   },
-  verified: { type: Boolean, default: false },
+  // verified: { type: Boolean, default: false },
 
   token: { type: String, required: true },
   createdAt: { type: Date, default: Date.now, expires: 600 },
@@ -184,8 +182,6 @@ UserSchema.pre("save", function (next) {
 const UserModel = model("User", UserSchema);
 
 const AccountDetails = model("AccountDetails", accountDetailsSchema);
-
-module.exports = { UserModel, AccountDetails };
 
 const ResetToken = model("ResetToken", tokenSchema);
 
