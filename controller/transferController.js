@@ -1,64 +1,70 @@
-
 const express = require("express");
-const { UserModel, } = require("../models/user");
+const  mongoose  = require("mongoose");
+const {credit,debit} = require("../models/credit&debitFUN")
+const {UserModel,AccountDetails} = require("../models/user")
+const crypto = require("crypto")
 
-const transferController = async function (req, res) {
-  // console.log(req.body);
-  // console.log(req.header("id"));
-  // console.log(req.header("token"));
-  // console.log(req.header("email"));
-  console.log(req.headers.email);
-  console.log(req.body.accountnumber);
-  const Receiver = await UserModel.findOne({accountnumber:req.body.accountnumber})
-   if(!Receiver) return res.status(400).send({meassage:"Account Number doesn't Exist"})
+const transfercontroller = async (req, res)=>{
 
-   console.log(Receiver);
+      const transacID = crypto.randomBytes(32).toString('hex');
+      const {id} = req.UserData;
+      const {accountnumber, message , account} = req.body;
+
+  const result = debit(account,message,accountnumber,id,transacID,session=null);
+
+    console.log(result);
+
+    // const session = await mongoose.startSession();
+
+    //  await session.startTransaction()
+
+    // try {
   
-      // userId
-    // balance
-    // totalDeposit: 
-    // totalWithdraw: 
-       
-  
+    //  const transacID = crypto.randomBytes(32).toString('hex');
+    //   const {id} = req.UserData;
+    //   const {accountnumber, message , account} = req.body;
+    //         const transactionStatus = await Promise.all([
+    //             debit(account,message,accountnumber,id,transacID,session),
+    //             credit(account,message,accountnumber,id,transacID,session )
+    //         ])  
 
-  //  const id = req.query.id
-  //  const email = req.g
-    
-    
-  
+    //   const  trancactFailed = transactionStatus.filter((transac)=> transac.status !== true)
 
-    
-    
-      
- 
-    
+    //     console.log(trancactFailed);
 
-  //  const sender = await UserModel(req.body.)
+    //     if(trancactFailed.length){
 
-     
+    //      const errorMsg = trancactFailed.map((err)=> err.message);
 
-  //  import axios from 'axios'
+    //      await session.abortTransaction();
+          
+    //     //  return res.send(errorMsg)
+    //     console.log(errorMsg);
+    //     return
+    //     }
+        
+    //    await session.commitTransaction();
+    //     session.endSession()
+    //     // res.send("success")
+    //     console.log("success");
+    //     return
+    //     } catch (error) {
+    //         await session.commitTransaction();
+    //             session.endSession();
+    //             console.log(error);
+    //             return
+    //         }
+
+}
+module.exports ={
+    transfercontroller
+}
+
+
+   //  import axios from 'axios'
   //  params = {'HTTP_CONTENT_LANGUAGE': self.language}
   //  headers = {'header1': value}
   //  axios.post(url, params, headers)
   //  Is this correct? Or should I do:
    
   //  axios.post(url, params: params, headers: headers)
-
-
-        // transactionType: t
-        // amount
-        // accountnumber:
-        // senderName: 
-        // receiverName:
-        // balanceBefore:      
-        // balanceAfter
-        // message:
-
-      
-    
-}
-
-module.exports ={
-  transferController
-}

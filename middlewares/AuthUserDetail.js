@@ -2,19 +2,22 @@ const {DecryptUserInfo} = require("../util/encrypt")
 const {UserModel}  = require("../models/user")
 
  async function AuthUserDetail(req,res,next) {
-     const userDetail= DecryptUserInfo(req.header("SecUSerInfo"))
-     
+     const userDetail= DecryptUserInfo(req.header("SecUSerInfo"));
      try {
        const user = JSON.parse(userDetail)
-       console.log(user);
-       await UserModel.findById(user.id.toString())
-         console.log(user);
-          req.userDeta = user
+
+       if (!req.UserId === user.id) throw new Error("user can transfer")
+
+      const UserCheck = await UserModel.findOne({_id:user.id,email:user.email})
+      
+      if (!UserCheck) throw new Error("user do not exist")
+          req.UserData = user
           next()
      } catch (error) {
-         return res.status(400).send("user do not exist")
+         return res.status(400).send({ message:"user do not exist" ,error: error})
      }
 }
+
 module.exports ={
   AuthUserDetail
 }
