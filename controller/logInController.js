@@ -1,60 +1,56 @@
-
 const express = require("express");
-const joi = require("joi")
-const jwt = require("jsonwebtoken")
-const bcrypt= require("bcrypt")
-const {UserModel,AccountDetails}= require("../models/user")
- const {loginValidation} = require("../models/validation")
- const crypto = require("crypto")
- const {EncryptUserInfo} = require("../util/encrypt")
-
+const joi = require("joi");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const { UserModel, AccountDetails } = require("../models/user");
+const { loginValidation } = require("../models/validation");
+const crypto = require("crypto");
+const { EncryptUserInfo } = require("../util/encrypt");
 
 const logIncontroller = async function (req, res) {
+  try {
+    const loginData = {
+      email: req.body.email,
+      password: req.body.password,
+    };
+    const { error } = loginValidation(loginData);
 
+    if (error) return res.status(400).send(error.details);
 
-//   try {
-//     const loginData = {
-//       email: req.body.email,
-//       password: req.body.password,
-//     };
-//     const { error } = loginValidation(loginData);
+    const User = await UserModel.findOne({ email: loginData.email });
 
-      if (error) return res.status(400).send(error.details);
-        
-     const User = await UserModel.findOne({ email: loginData.email });
-      
-//      if (!User) return res.status(400).send("wrong email try angin");
-            
-<<<<<<< HEAD
-//       const correctPassword = await bcrypt.compare(loginData.password,User.password)    
-//         if (!correctPassword) return res.status(400).send("wrong password try angin");
-=======
-      const correctPassword = await bcrypt.compare(loginData.password,User.password)  
-        
-        if (!correctPassword) return res.status(400).send("wrong password try angin");
->>>>>>> cac6a5dca225f1b25015589965abd758fb5b5bdd
-     
-//       const token = jwt.sign({_id:User.id}, process.env.TOKEN_SECRET)
-           
-      // await UserModel.updateOne({email:loginData.email},{token:token});
-      const userData={
-        email:User.email,
-        id:User._id 
-      }    
-   
-       const  SecretUserInfo=EncryptUserInfo(JSON.stringify(userData))
+    if (!User) return res.status(400).send("wrong email try angin");
 
-       console.log(SecretUserInfo);
-      
+    const correctPassword = await bcrypt.compare(
+      loginData.password,
+      User.password
+    );
 
-      return res.status(200).send({token:token,name:User.lastname,accountnumber:User.accountnumber,SecUSerInfo:SecretUserInfo})
-      
-    } catch (error) {
-      return res.status(200).send(error)
+    if (!correctPassword)
+      return res.status(400).send("wrong password try angin");
 
-    }
+    const token = jwt.sign({ _id: User.id }, process.env.TOKEN_SECRET);
 
-  }  
+    await UserModel.updateOne({ email: loginData.email }, { token: token });
+    const userData = {
+      email: User.email,
+      id: User._id,
+    };
+
+    const SecretUserInfo = EncryptUserInfo(JSON.stringify(userData));
+
+    console.log(SecretUserInfo);
+
+    return res.status(200).send({
+      token: token,
+      name: User.lastname,
+      accountnumber: User.accountnumber,
+      SecUSerInfo: SecretUserInfo,
+    });
+  } catch (error) {
+    return res.status(200).send(error);
+  }
+};
 module.exports = {
-  logIncontroller
+  logIncontroller,
 };
