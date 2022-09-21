@@ -44,7 +44,7 @@ const registerControllerPost = async (req, res) => {
       AccountDetails.create(
         {
           userId: user._id,
-          // balance: 450000
+          // balance: 4000
         },
         async function (err, userDoc) {
           if (err) return err;
@@ -65,8 +65,3 @@ const registerControllerPost = async (req, res) => {
 module.exports = {
   registerControllerPost,
 };
-
-// try {
-// } catch (err) {
-//   res.status(400).send(err);
-// }

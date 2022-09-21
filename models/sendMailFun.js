@@ -8,7 +8,7 @@ oAuth2client.setCredentials({refresh_token:process.env.REFRESH_TOKEN })
    
       
 
-  async function mailsender (emailTo,subject, message)  { 
+  async function mailsender (emailTo,subject, message1,)  { 
     const accsessToken = await oAuth2client.getAccessToken()
 
     let transporter = nodemailer.createTransport({

@@ -20,18 +20,6 @@ const atlasDB = `mongodb+srv://pseudobrains:${passwordAtlas}@cluster0.xo0lnsr.mo
 //   useFindAndModify:false
 // }
 
-mongoose
-  .connect(atlasDB)
-  .then(() => console.log("DB Connection Success"))
-  .catch((err) => console.log(err));
-
-// const options = {
-//   user: <username>,
-//   pass: <password>,
-//   authSource: "admin",
-//   useNewUrlParser: true
-// };
-
 // use area
 const app = express();
 app.use(cors());

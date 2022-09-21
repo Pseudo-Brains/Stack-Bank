@@ -25,8 +25,14 @@ const logIncontroller = async function (req, res) {
       
 //      if (!User) return res.status(400).send("wrong email try angin");
             
+<<<<<<< HEAD
 //       const correctPassword = await bcrypt.compare(loginData.password,User.password)    
 //         if (!correctPassword) return res.status(400).send("wrong password try angin");
+=======
+      const correctPassword = await bcrypt.compare(loginData.password,User.password)  
+        
+        if (!correctPassword) return res.status(400).send("wrong password try angin");
+>>>>>>> cac6a5dca225f1b25015589965abd758fb5b5bdd
      
 //       const token = jwt.sign({_id:User.id}, process.env.TOKEN_SECRET)
            
