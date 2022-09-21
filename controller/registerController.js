@@ -2,8 +2,10 @@
 const { UserModel } = require("../models/user");
 const { RegisterValidation } = require("../models/validation");
 const bcrypt = require("bcrypt");
-const { generateAccoNum} = require("../models/generateAccounNumber")
+const { generateAccoNum } = require("../models/generateAccounNumber");
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
+const { mailsender } = require("../models/sendMailFun");
 
 const registerControllerPost = async (req, res) => {
   // req.send("gdhkj,m")
@@ -25,27 +27,50 @@ const registerControllerPost = async (req, res) => {
 
   const harshPassword = await bcrypt.hash(req.body.password, salt);
 
-    const AccountNumber = await generateAccoNum()
+  const AccountNumber = await generateAccoNum();
 
-  const user = new  UserModel({
+  const user = new UserModel({
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     email: req.body.email,
     password: harshPassword,
     phone: req.body.phone,
     dateOfBirth: req.body.dateOfBirth,
-    accountnumber:  AccountNumber,
+    accountnumber: AccountNumber,
     emailToken: crypto.randomBytes(64).toString("hex"),
     isVerfied: false,
   });
-  const savedUser = await user.save();
-  res.send(savedUser);
-  // try {
-  // } catch (err) {
-  //   res.status(400).send(err);
-  // }
+
+  const token = jwt.sign({ _id: user.id }, process.env.TOKEN_SECRET);
+
+  await user.save((err) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+    res.status(200).json({
+      _id: user.id,
+      token,
+    });
+    const link = `${process.env.BASE_URL}/api/verify-password/${user.emailToken}`;
+
+    mailsender(req.body.email, "Reset your password", link)
+      .then((result) =>
+        res.status(200).send({
+          message:
+            "password reset link sent have being send to your email account",
+          result,
+        })
+      )
+      .catch((error) => console.log(error));
+  });
 };
 
 module.exports = {
   registerControllerPost: registerControllerPost,
 };
+
+// try {
+// } catch (err) {
+//   res.status(400).send(err);
+// }
