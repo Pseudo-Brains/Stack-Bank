@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
-const jwt = require("jsonwebtoken")
+// const jwt = require("jsonwebtoken")
 
 require("dotenv").config();
 // file import area
@@ -20,21 +20,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-<<<<<<< HEAD
-=======
+// <<<<<<< HEAD
+// =======
 
-
-
->>>>>>> f4fc648169b94823e0bf8817a8eccf68f2bdcad6
+// >>>>>>> f4fc648169b94823e0bf8817a8eccf68f2bdcad6
 //routes
 const { registerRoute } = require("./route/register");
-const { loginRoute } = require("./route/login");
+// const { loginRoute } = require("./route/login");
 // const { ForgotRoute} = require("./route/forgetPassword")
 // const { ResetPasswordRoute} = require("./route/reset-password")
 
 // Route Middleware
 app.use("/api", registerRoute);
-app.use("/api", loginRoute);
+// app.use("/api", loginRoute);
 // app.use("/api", ForgotRoute);
 // app.use("/api", ResetPasswordRoute);
 

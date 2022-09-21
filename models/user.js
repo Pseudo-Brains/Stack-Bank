@@ -156,21 +156,9 @@ const tokenSchema = new Schema({
     ref: "User",
   },
   verified: { type: Boolean, default: false },
-<<<<<<< HEAD
-  token: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now, expires: 600 },
-  userId: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
-  },
-  verified: { type: Boolean, default: false },
-  token: { type: String, required: true },
-=======
 
   token: { type: String, required: true },
 
->>>>>>> f4fc648169b94823e0bf8817a8eccf68f2bdcad6
   createdAt: { type: Date, default: Date.now, expires: 600 },
 });
 
@@ -197,12 +185,6 @@ const AccountDetails = model("AccountDetails", accountDetailsSchema);
 
 module.exports = { UserModel, AccountDetails };
 
-<<<<<<< HEAD
-// const ResetToken = model("ResetToken", tokenSchema);
-
-// module.exports = { UserModel, AccountDetails, ResetToken };
-=======
 const ResetToken = model("ResetToken", tokenSchema);
 
 module.exports = { UserModel, AccountDetails, ResetToken };
->>>>>>> f4fc648169b94823e0bf8817a8eccf68f2bdcad6
