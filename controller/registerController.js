@@ -43,7 +43,7 @@ const registerControllerPost = async (req, res) => {
       if(err)return err;
       AccountDetails.create({
         userId:user._id,
-        // balance: 450000
+        // balance: 4000
       },async function (err,userDoc) {
         if(err) return err;
       await UserModel.findOneAndUpdate({_id:user._id},{accountDetails: userDoc._id })
@@ -61,3 +61,4 @@ const registerControllerPost = async (req, res) => {
 module.exports = {
    registerControllerPost
 };
+
