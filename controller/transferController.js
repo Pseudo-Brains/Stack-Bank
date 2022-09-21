@@ -4,57 +4,41 @@ const {credit,debit} = require("../models/credit&debitFUN")
 const {UserModel,AccountDetails} = require("../models/user")
 const crypto = require("crypto")
 
-const transfercontroller = async (req, res)=>{
+const transfercontroller = async (req, res)=>{ 
 
-      const transacID = crypto.randomBytes(32).toString('hex');
-      const {id} = req.UserData;
-      const {accountnumber, message , account} = req.body;
+    const session = await mongoose.startSession();
 
-  const result = debit(account,message,accountnumber,id,transacID,session=null);
+     await session.startTransaction()
 
-    console.log(result);
-
-    // const session = await mongoose.startSession();
-
-    //  await session.startTransaction()
-
-    // try {
+    try {
   
-    //  const transacID = crypto.randomBytes(32).toString('hex');
-    //   const {id} = req.UserData;
-    //   const {accountnumber, message , account} = req.body;
-    //         const transactionStatus = await Promise.all([
-    //             debit(account,message,accountnumber,id,transacID,session),
-    //             credit(account,message,accountnumber,id,transacID,session )
-    //         ])  
+     const transacID = crypto.randomBytes(32).toString('hex');
 
-    //   const  trancactFailed = transactionStatus.filter((transac)=> transac.status !== true)
+      const {id} = req.UserData;
 
-    //     console.log(trancactFailed);
+      const {accountnumber, message , account} = req.body;
+      
+            const transactionStatus = await Promise.all([
+                debit(account,message,accountnumber,id,transacID,session),
+                credit(account,message,accountnumber,id,transacID,session )
+            ])  
 
-    //     if(trancactFailed.length){
+      const  trancactFailed = transactionStatus.filter((transac)=> transac.status !== true)
 
-    //      const errorMsg = trancactFailed.map((err)=> err.message);
-
-    //      await session.abortTransaction();
-          
-    //     //  return res.send(errorMsg)
-    //     console.log(errorMsg);
-    //     return
-    //     }
-        
-    //    await session.commitTransaction();
-    //     session.endSession()
-    //     // res.send("success")
-    //     console.log("success");
-    //     return
-    //     } catch (error) {
-    //         await session.commitTransaction();
-    //             session.endSession();
-    //             console.log(error);
-    //             return
-    //         }
-
+        if(trancactFailed.length){
+         const errorMsg = trancactFailed.map((err)=> err.message);
+         await session.abortTransaction();  
+        //  return res.send(errorMsg)
+        return res.status(200).send({message:"transaction feild",errMsg: errorMsg})
+        } 
+       await session.commitTransaction();
+        session.endSession()
+        return res.status(200).send("successful transfer")
+        } catch (error) {
+         await session.abortTransaction();
+          session.endSession();
+          return res.status(500).send("internet error")
+       }
 }
 module.exports ={
     transfercontroller

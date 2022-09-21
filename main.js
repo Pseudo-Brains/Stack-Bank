@@ -11,7 +11,7 @@ require("dotenv").config();
 //   console.log("connected to StackDB")
 // );
   const passwordAtlas = "test12345"
-const atlasDB = `mongodb+srv://pseudobrains:${passwordAtlas}@cluster0.xo0lnsr.mongodb.net/stackDB?retryWrites=true&w=majority`;
+  const atlasDB = `mongodb+srv://pseudobrains:${passwordAtlas}@cluster0.xo0lnsr.mongodb.net/stackDB?retryWrites=true&w=majority`;
 
 // mongoose.connect(atlasDB,{
 //    useNewUrlParser:true,
@@ -24,14 +24,6 @@ const atlasDB = `mongodb+srv://pseudobrains:${passwordAtlas}@cluster0.xo0lnsr.mo
 
  mongoose.connect(atlasDB).then(() => console.log("DB Connection Success")).catch((err) => console.log(err));
 
-
-
-// const options = {
-//   user: <username>,
-//   pass: <password>,
-//   authSource: "admin",
-//   useNewUrlParser: true
-// };
 
 // use area
 const app = express();

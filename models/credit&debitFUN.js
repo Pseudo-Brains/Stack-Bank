@@ -33,6 +33,14 @@ async function credit(amountt,meassage,acconumber,senderId,transacID, session) {
 
   const theReciver = await UserModel.findOne({accountnumber:acconumber})
 
+  const theSenderCheck = await UserModel.findById({_id:senderId})
+
+  if (theSenderCheck.accountnumber === Number(acconumber) ) return{
+    status: false,
+    statusCode:400,
+    message: ` you can not creadit your self`
+   }
+
   if (!theReciver) return {
    status: false,
    statusCode:404,
@@ -50,17 +58,17 @@ async function credit(amountt,meassage,acconumber,senderId,transacID, session) {
 
  const transactionsDetail={
    enum: "credit",
+   type: "credit",
    amount: amount,
    transactionID:transacID,
    senderName: senderNam,
    receiverName: receiverNam,
    balanceBefore:Number(userAccouDet.balance),
    balanceAfter:Number(userAccouDet.balance)+Number(amount),
-   meassage:meassage
+   message:meassage
  }
 
-  const transactionDone =await  AccountDetails.findOneAndUpdate({userId:theReciver._id},{ $push: {transactionsDetails:transactionsDetail}},{session})
-
+   const transactionDone = await UserModel.updateOne({_id:theReciver._id},{ $push: {transactionsDetails:[transactionsDetail]}},{session,new:true,upsert:true}).exec()
 
     return {
    status: true,
@@ -77,6 +85,12 @@ async function debit(amountt,meassage,acconumber,senderId,transacID, session) {
 
    const theSender = await UserModel.findOne({_id:senderId})
 
+     if (theSender.accountnumber === Number(acconumber) ) return{
+      status: false,
+      statusCode:400,
+      message: ` you can not send money to your self`
+     }
+
    
     if (!theSender) return {
           status: false,
@@ -84,48 +98,49 @@ async function debit(amountt,meassage,acconumber,senderId,transacID, session) {
           message: `User  doesn\'t exist`
       }
      
-      if (amount <1)return {
+      if (amount < 1)return {
             status: false,
             statusCode:404,
             message: `you can not send negative amount`
         }
 
-       return console.log(theSender);;
        
-  //  const theSenderAccoDet = AccountDetails.findOne({userId:theSender._id})
+
+         const theSenderAccoDet = await AccountDetails.findOne({userId:theSender._id})
      
-  //  console.log(theSenderAccoDet);
-
-  //  if (Number(theSenderAccoDet.balance)< amount)return {
-  //      status: false,
-  //      statusCode:400,
-  //      message:`User has insufficient balance`
-  //  }
-  //     console.log(theSender._id);
-
-  //  const userAccouDet = AccountDetails.findOneAndUpdate({userId:theSender._id},{$inc:{balance:-amount,totalWithdraw:+amount}},{session})
-  //  console.log(userAccouDet);
+         
+         
+      if (Number(theSenderAccoDet.balance)< amount)return {
+          status: false,
+          statusCode:400,
+          message:`User has insufficient balance`
+      }
+         console.log(theSender._id);
      
-//    const theReciver = await UserModel.findOne({accountnumber:acconumber})
+      const userAccouDet = await AccountDetails.updateOne({userId:theSender._id},{$inc: {balance:-amount,totalWithdraw:+amount}},{session})
 
-//    const senderNam =`${theSender.firstname} ${theSender.lastname}`
+      
+      const theReciver = await UserModel.findOne({accountnumber:acconumber})
+      
+      const senderNam =`${theSender.firstname} ${theSender.lastname}`
+      
+      const receiverNam = `${theReciver.firstname} ${theReciver.lastname}`
+            
+  
+   const transactionsDetail={
+     enum: "debit",
+     type: "debit",
+     amount: amount,
+     transactionID:transacID,
+     senderName: senderNam,
+     receiverName: receiverNam,
+     balanceBefore:Number(theSender.balance),
+     balanceAfter:Number(theSender.balance)-Number(amount),
+     message:meassage
+ }
 
-//    const receiverNam = `${theReciver.firstname} ${theReciver.lastname}`
- 
-//    const transactionsDetail={
-//      enum: "debit",
-//      amount: amount,
-//      transactionID:transacID,
-//      senderName: senderNam,
-//      receiverName: receiverNam,
-//      balanceBefore:Number(userAccouDet.balance),
-//      balanceAfter:Number(userAccouDet.balance)-Number(amount),
-//      meassage:meassage
-//  }
-
-//  const transactionDone =await  AccountDetails.findOneAndUpdate({userId:theSender._id},{ $push: {transactionsDetails:transactionsDetail}},{session})
-
-
+ const transactionDone = await UserModel.updateOne({_id:theSender._id},{ $push: {transactionsDetails:[transactionsDetail]}},{session, new: true, upsert: true }).exec()
+    
  return {
    status: true,
    statusCode:201,
@@ -140,6 +155,27 @@ module.exports ={
     credit,
     debit
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//  ////////////////////////////////
+//  ///////////////////////////
+//         test code below
+
+
 
 
 
