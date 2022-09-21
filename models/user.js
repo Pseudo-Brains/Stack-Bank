@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 const { Schema, model } = require("mongoose");
 
 //  transaction Schema
-
+// "deposit", "transfer", "reversal", "withdrawal"
 const transactionSchema = new Schema({
   transactionType: {
     type: String,
-    enum: ["deposit", "transfer", "reversal", "withdrawal"],
+    enum: ["credit","debit"],
     required: true,
   },
   amount: {
@@ -15,8 +15,8 @@ const transactionSchema = new Schema({
     required: true,
     default: 0.0,
   },
-  accountnumber: {
-    type: Number,
+  transactionID: {
+    type: String,
     required: true,
   },
   senderName: {
@@ -58,29 +58,26 @@ const accountDetailsSchema = new Schema({
     ref: "User",
   },
   balance: {
-    type: mongoose.Decimal128,
+    type: Number,
     required: true,
     trim: true,
     default: 0.0,
   },
   totalDeposit: {
     type: Number,
-    required: true,
     default: 0.0,
   },
   totalWithdraw: {
     type: Number,
-    required: true,
     default: 0.0,
   },
   createdAt: {
     type: Date,
     default: () => Date.now(),
+    required:true,
+    immutable:true
   },
-  updatedAt: {
-    type: Date,
-    required: true,
-  },
+  updated_at: { type: Date }
 });
 
 const UserSchema = new Schema({
@@ -116,7 +113,10 @@ const UserSchema = new Schema({
     unique: true,
     trim: true,
   },
-  accountDetails: accountDetailsSchema,
+  accountDetails: {
+    type: Schema.Types.ObjectId,
+    ref: "AccountDetails",
+  },
   dateOfBirth: {
     type: Date,
     required: true,
@@ -135,7 +135,7 @@ const UserSchema = new Schema({
     min: 11,
     immutable: true,
   },
-  transactionsDetail: [transactionSchema],
+  transactionsDetails: [transactionSchema],
   createdAt: {
     type: Date,
     default: () => Date.now(),
@@ -155,11 +155,18 @@ const tokenSchema = new Schema({
     required: true,
     ref: "User",
   },
+<<<<<<< HEAD
   verified: { type: Boolean, default: false },
 
   token: { type: String, required: true },
 
+=======
+  // verified: { type: Boolean, default: false },
+
+  token: { type: String, required: true },
+>>>>>>> ad0642bcf0afdaf0a88ccf6901a56cec04e5aba2
   createdAt: { type: Date, default: Date.now, expires: 600 },
+ 
 });
 
 //  Schame middle wares
@@ -183,8 +190,15 @@ const UserModel = model("User", UserSchema);
 
 const AccountDetails = model("AccountDetails", accountDetailsSchema);
 
+<<<<<<< HEAD
 module.exports = { UserModel, AccountDetails };
 
 const ResetToken = model("ResetToken", tokenSchema);
 
 module.exports = { UserModel, AccountDetails, ResetToken };
+=======
+const ResetToken = model("ResetToken", tokenSchema);
+
+module.exports = { UserModel, AccountDetails, ResetToken };
+
+>>>>>>> ad0642bcf0afdaf0a88ccf6901a56cec04e5aba2
