@@ -1,26 +1,5 @@
 const { UserModel, AccountDetails } = require("./user")
-
-//   userId
-//   balance   needed field
-//   totalDeposit
-//   totalWithdraw
-
-// transaction
-
-// transactionType
-//   enum: ["credit","debit"],  
-//   amount 
-//   accountnumber
-//   senderName
-//   receiverName
-//   balanceBefore
-//   balanceAfter
-//   message
-// PostModel.findOneAndUpdate({ _id: postId }, { $push: { comments: comment } }, (err, success)
-// Wallets.findOneAndUpdate({username}, { $inc: { balance: -amount } }, {session}); 
-
-
-
+const {mailsender} = require("../models/sendMailFun")
 
 async function credit(amountt,meassage,acconumber,senderId,transacID, session) {
     const amount = Number(amountt)
@@ -70,6 +49,8 @@ async function credit(amountt,meassage,acconumber,senderId,transacID, session) {
 
    const transactionDone = await UserModel.updateOne({_id:theReciver._id},{ $push: {transactionsDetails:[transactionsDetail]}},{session,new:true,upsert:true}).exec()
 
+    await mailsender(theReciver.email,"Credit",`Dear ${theReciver.firstname}`,`Your have being credited by ${theSender.firstname} ${theSender.lastname}`,`amount ${amount}`, `You balance ${userAccouDet.balance} current balance ${Number(userAccouDet.balance)+Number(amount)}`)
+
     return {
    status: true,
    statusCode:201,
@@ -77,6 +58,15 @@ async function credit(amountt,meassage,acconumber,senderId,transacID, session) {
    data: {creditedAccount:userAccouDet, transactionDone}
  }
 }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -104,11 +94,8 @@ async function debit(amountt,meassage,acconumber,senderId,transacID, session) {
             message: `you can not send negative amount`
         }
 
-       
-
          const theSenderAccoDet = await AccountDetails.findOne({userId:theSender._id})
      
-         
          
       if (Number(theSenderAccoDet.balance)< amount)return {
           status: false,
@@ -134,12 +121,15 @@ async function debit(amountt,meassage,acconumber,senderId,transacID, session) {
      transactionID:transacID,
      senderName: senderNam,
      receiverName: receiverNam,
-     balanceBefore:Number(theSender.balance),
-     balanceAfter:Number(theSender.balance)-Number(amount),
+     balanceBefore:Number(userAccouDet.balance),
+     balanceAfter:Number(userAccouDet.balance)-Number(amount),
      message:meassage
  }
 
  const transactionDone = await UserModel.updateOne({_id:theSender._id},{ $push: {transactionsDetails:[transactionsDetail]}},{session, new: true, upsert: true }).exec()
+
+ await mailsender(theSender.email,"debit",`Dear ${theSender.firstname}`,`Your have being credited by ${theReciver.firstname} ${theReciver.lastname}`,`amount ${amount}`, `You balance ${userAccouDet.balance} current balance ${Number(userAccouDet.balance)-Number(amount)}`)
+
     
  return {
    status: true,
@@ -148,9 +138,6 @@ async function debit(amountt,meassage,acconumber,senderId,transacID, session) {
    data: {creditedAccount:userAccouDet, transactionDone}
  }
 }
-
- 
-
 module.exports ={
     credit,
     debit
@@ -174,17 +161,6 @@ module.exports ={
 //  ////////////////////////////////
 //  ///////////////////////////
 //         test code below
-
-
-
-
-
-
-
-
-
-
-
 
 // async function credit(amountt,meassage,acconumber,senderId,transacID) {
 //     const amount = Number(amountt)

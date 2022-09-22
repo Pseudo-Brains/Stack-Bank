@@ -8,14 +8,14 @@ oAuth2client.setCredentials({refresh_token:process.env.REFRESH_TOKEN })
    
       
 
-  async function mailsender (emailTo,subject, message1,)  { 
+  async function mailsender (emailTo,subject, message1,message2='',message3="",message4="")  { 
     const accsessToken = await oAuth2client.getAccessToken()
 
     let transporter = nodemailer.createTransport({
-        // service: 'gmail',
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
+        service: 'gmail',
+        // host: "smtp.gmail.com",
+        // port: 465,
+        // secure: true,
         auth: { 
           type:"OAuth2",
           user: process.env.EMAIL,
@@ -33,8 +33,10 @@ oAuth2client.setCredentials({refresh_token:process.env.REFRESH_TOKEN })
         subject: subject,
         text: message,
         html:` <div> <h1> ${subject}</h1> 
-                 <h4> ${message}</h4> 
-                 <br/>
+                 <h4> ${message1}</h4>
+                 <h4> ${message2}</h4> 
+                 <h4> ${message3}</h4> 
+                 <h4> ${message4}</h4>  
                  <hr/>
                  <p> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cumque vel placeat perspiciatis impedit ducimus ipsam nemo asperiores, perferendis ullam quis voluptate! Mollitia ad sapiente quidem numquam blanditiis quam temporibus optio.</p>
                  <br/>

@@ -68,6 +68,6 @@ Router.post("/reset-password/:id/:token", async (req, res) => {
   }
 });
 
-//     module.exports={
-//     ResetPasswordRoute: Router
-//     }
+    module.exports={
+    ResetPasswordRoute: Router
+    }

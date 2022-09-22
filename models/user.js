@@ -7,7 +7,7 @@ const { Schema, model } = require("mongoose");
 const transactionSchema = new Schema({
   transactionType: {
     type: String,
-    enum: ["credit","debit"],
+    enum: ["credit","debit","loan","airtime"],
     required: true,
   },
   type: String,
@@ -51,6 +51,7 @@ const transactionSchema = new Schema({
     required: true,
   },
 });
+
 
 const accountDetailsSchema = new Schema({
   userId: {
@@ -156,16 +157,7 @@ const tokenSchema = new Schema({
     required: true,
     ref: "User",
   },
-<<<<<<< HEAD
-  verified: { type: Boolean, default: false },
-
   token: { type: String, required: true },
-
-=======
-  // verified: { type: Boolean, default: false },
-
-  token: { type: String, required: true },
->>>>>>> ad0642bcf0afdaf0a88ccf6901a56cec04e5aba2
   createdAt: { type: Date, default: Date.now, expires: 600 },
  
 });
@@ -191,15 +183,8 @@ const UserModel = model("User", UserSchema);
 
 const AccountDetails = model("AccountDetails", accountDetailsSchema);
 
-<<<<<<< HEAD
-module.exports = { UserModel, AccountDetails };
-
-const ResetToken = model("ResetToken", tokenSchema);
-
-module.exports = { UserModel, AccountDetails, ResetToken };
-=======
 const ResetToken = model("ResetToken", tokenSchema);
 
 module.exports = { UserModel, AccountDetails, ResetToken };
 
->>>>>>> ad0642bcf0afdaf0a88ccf6901a56cec04e5aba2
+
