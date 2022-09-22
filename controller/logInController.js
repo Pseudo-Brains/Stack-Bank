@@ -38,19 +38,17 @@ const logIncontroller = async function (req, res) {
     };
 
     const SecretUserInfo = EncryptUserInfo(JSON.stringify(userData));
-
-    console.log(SecretUserInfo);
-
     return res.status(200).send({
       token: token,
       name: User.lastname,
       accountnumber: User.accountnumber,
       SecUSerInfo: SecretUserInfo,
     });
+
   } catch (error) {
     return res.status(200).send(error);
   }
 };
 module.exports = {
-  logIncontroller,
+  logIncontroller
 };

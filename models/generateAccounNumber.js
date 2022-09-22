@@ -1,9 +1,7 @@
-<<<<<<< HEAD
-const { UserModel } = require("../models/user");
-=======
+
 
 const  {UserModel}  = require("../models/user")
->>>>>>> ad0642bcf0afdaf0a88ccf6901a56cec04e5aba2
+
 
 // test data
 
@@ -16,19 +14,6 @@ async function generateAccoNum() {
     while (nums.size < 7) {
       nums.add(Math.floor(Math.random() * 80) + 11);
     }
-<<<<<<< HEAD
-
-    let TempAccNum = Number(
-      [...nums].join("").split("").splice(0, 11).join("")
-    );
-
-    // test data
-    // AccountNum = useData.find((item)=> item === TempAccNum)
-    AccountNum = await UserModel.findOne({ accountnumber: TempAccNum });
-    if (!AccountNum) {
-      return TempAccNum;
-    }
-=======
    let TempAccNum =  Number([...nums].join("").split("").splice(0,11).join(""));    
         // test data
       // AccountNum = useData.find((item)=> item === TempAccNum)
@@ -36,7 +21,7 @@ async function generateAccoNum() {
       if (!AccountNum){
         return TempAccNum
        }
->>>>>>> ad0642bcf0afdaf0a88ccf6901a56cec04e5aba2
+
   } while (AccountNum);
 }
 
