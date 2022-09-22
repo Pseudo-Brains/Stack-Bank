@@ -40,10 +40,8 @@ Router.post("/forgot-password", async (req,res)=>{
        //how the params on the mailsender emailTo,   subject,   message
        
      mailsender(req.body.email,"Reset your password",link).then(result=>
-      //  send message 
       res.status(200).send({message:"password reset link sent have being send to your email account", result})
        ).catch((error)=> 
-           //  send message 
         res.status(400).send({message:"connect to internet",error: error})
        );
 
