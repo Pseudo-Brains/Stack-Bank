@@ -14,11 +14,13 @@ const transfercontroller = async (req, res) => {
     console.log(typeof transacID);
     const { id } = req.UserData;
 
-    const { accountnumber, message, account } = req.body;
+    const { accountnumber, message, amount } = req.body;
+
+    console.log(amount)
 
     const transactionStatus = await Promise.all([
-      debit(account, message, accountnumber, id, transacID, session),
-      credit(account, message, accountnumber, id, transacID, session),
+      debit(amount, message, accountnumber, id, transacID, session),
+      credit(amount, message, accountnumber, id, transacID, session),
     ]);
 
     const trancactFailed = transactionStatus.filter(
