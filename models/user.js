@@ -12,7 +12,7 @@ const transactionSchema = new Schema({
   },
   type: String,
   amount: {
-    type: Number,
+    type: mongoose.Decimal128,
     required: true,
     default: 0.0,
   },
@@ -60,18 +60,21 @@ const accountDetailsSchema = new Schema({
     ref: "User",
   },
   balance: {
-    type: Number,
+    type: mongoose.Decimal128,
     required: true,
     trim: true,
     default: 0.0,
   },
   totalDeposit: {
-    type: Number,
+    type: mongoose.Decimal128,
     default: 0.0,
+    trim:true
   },
+
   totalWithdraw: {
-    type: Number,
-    default: 0.0,
+    type: mongoose.Decimal128,
+    trim:true,
+    default: 0.0
   },
   createdAt: {
     type: Date,
@@ -79,7 +82,7 @@ const accountDetailsSchema = new Schema({
     required:true,
     immutable:true
   },
-  updated_at: { type: Date }
+  updated_at:{ type: Date }
 });
 
 const UserSchema = new Schema({

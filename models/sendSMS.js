@@ -12,9 +12,7 @@ client.messages
          to: `${to}` 
        }) 
       .then(message => console.log(message.sid)) 
-      .done();
-
-      
+      .done();   
 }
 
 

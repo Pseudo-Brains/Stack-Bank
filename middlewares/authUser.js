@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken")
         try {  
          const verifiy = jwt.verify(token,process.env.TOKEN_SECRET);
           req.UserId = verifiy._id;
+          req.token = token
            next()
            return
         } catch (error) {

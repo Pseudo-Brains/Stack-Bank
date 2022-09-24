@@ -3,12 +3,12 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
-
 require("dotenv").config();
 
 // mongoose.connect("mongodb://localhost/StackDB", () =>
 //   console.log("connected to StackDB")
 // );
+
   const passwordAtlas = "test12345"
  const atlasDB = `mongodb+srv://pseudobrains:${passwordAtlas}@cluster0.xo0lnsr.mongodb.net/stackDB?retryWrites=true&w=majority`;
 
@@ -42,6 +42,7 @@ const { transferRoute} = require("./route/transfer")
 const {AppMain} = require("./route/home")
 const {LoanRoute} = require("./route/loan")
 const {AirtimeRoute} = require("./route/Airtime")
+const {LogoutRoute} = require("./route/logout")
 
 // Route Middleware
 app.use("/api", registerRoute);
@@ -53,6 +54,7 @@ app.use("/api",AppMain);
 app.use("/api",transferRoute);
 app.use("/api",LoanRoute);
 app.use("/api",AirtimeRoute);
+app.use("/api",LogoutRoute);
 
 
 
