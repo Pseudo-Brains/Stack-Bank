@@ -2,8 +2,8 @@ const Route = require("express").Router()
 const {homeController} = require("../controller/homeController")
 const {Authtoken} = require("../middlewares/authUser")
 
-Route.get("/appmain" , Authtoken, homeController);
+Route.get("/dashboard" , Authtoken, homeController);
 
 module.exports = {
-    AppMain: Route
+    dashboard: Route
 }
