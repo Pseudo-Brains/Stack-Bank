@@ -52,7 +52,6 @@ const transactionSchema = new Schema({
   },
 });
 
-
 const accountDetailsSchema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
@@ -62,19 +61,18 @@ const accountDetailsSchema = new Schema({
   balance: {
     type: mongoose.Decimal128,
     required: true,
-    trim: true,
     default: 0.0,
   },
   totalDeposit: {
     type: mongoose.Decimal128,
-    default: 0.0,
+    default: 0.00,
     trim:true
   },
 
   totalWithdraw: {
     type: mongoose.Decimal128,
     trim:true,
-    default: 0.0
+    default: 0.00
   },
   createdAt: {
     type: Date,
@@ -84,6 +82,8 @@ const accountDetailsSchema = new Schema({
   },
   updated_at:{ type: Date }
 });
+
+// UserSchema
 
 const UserSchema = new Schema({
   firstname: {

@@ -1,6 +1,8 @@
 const { UserModel, AccountDetails } = require("./user")
 const {mailsender} = require("../models/sendMailFun")
 
+
+
 async function credit(amountt,meassage,acconumber,senderId,transacID, session) {
     const amount = Number(amountt)
    
@@ -20,13 +22,14 @@ async function credit(amountt,meassage,acconumber,senderId,transacID, session) {
     message: ` you can not creadit your self`
    }
 
+
   if (!theReciver) return {
    status: false,
    statusCode:404,
-   message: `User ${username} doesn\'t exist`
+   message: `User user doesn 't exist`
  }
 
- const userAccouDet =await  AccountDetails.findOneAndUpdate({userId:theReciver._id},{ $inc: {balance:+amount,totalDeposit:+amount}},{session})
+ const userAccouDet = await  AccountDetails.findOneAndUpdate({userId:theReciver._id},{ $inc: {balance:+amount,totalDeposit:+amount}},{session,new:true})
 
  const theSender = await UserModel.findById({_id:senderId})
 
@@ -34,6 +37,11 @@ async function credit(amountt,meassage,acconumber,senderId,transacID, session) {
  const senderNam =`${theSender.firstname} ${theSender.lastname}`
 
  const receiverNam = `${theReciver.firstname} ${theReciver.lastname}`
+
+//  const balAfter = userAccouDet.balance
+//  const balBefore =userAccouDet.balance + amount
+
+ console.log(userAccouDet);
 
  const transactionsDetail={
    enum: "credit",
@@ -43,7 +51,7 @@ async function credit(amountt,meassage,acconumber,senderId,transacID, session) {
    senderName: senderNam,
    receiverName: receiverNam,
    balanceBefore:Number(userAccouDet.balance),
-   balanceAfter:Number(userAccouDet.balance)+Number(amount),
+   balanceAfter:Number(userAccouDet.balance)+ Number(amount),
    message:meassage
  }
 
@@ -105,7 +113,7 @@ async function debit(amountt,meassage,acconumber,senderId,transacID, session) {
          console.log(theSender._id);
 
      
-      const userAccouDet = await AccountDetails.updateOne({userId:theSender._id},{$inc: {balance:-amount,totalWithdraw:+amount}},{session,new:true,upsert:true})
+      const userAccouDet = await AccountDetails.findOneAndUpdate({userId:theSender.id},{$inc: {balance:-amount,totalWithdraw:-amount}},{session,new:true})
 
       
       const theReciver = await UserModel.findOne({accountnumber:acconumber})
@@ -114,20 +122,23 @@ async function debit(amountt,meassage,acconumber,senderId,transacID, session) {
       
       const receiverNam = `${theReciver.firstname} ${theReciver.lastname}`
             
-  
+      // const balAfter = userAccouDet.balance
+      // const balBefore = userAccouDet.balance - amount
+        console.log(userAccouDet);
+
    const transactionsDetail={
      enum: "debit",
      type: "debit",
-     amount: amount,
+     amount:amount,
      transactionID:transacID,
      senderName: senderNam,
      receiverName: receiverNam,
      balanceBefore:Number(userAccouDet.balance),
-     balanceAfter:Number(userAccouDet.balance)-Number(amount),
+     balanceAfter:Number(userAccouDet.balance)- Number(amount),
      message:meassage
  }
 
- const transactionDone = await UserModel.updateOne({_id:theSender._id},{ $push: {transactionsDetails:[transactionsDetail]}},{session, new: true, upsert: true }).exec()
+ const transactionDone = await UserModel.updateOne({_id:theSender.id},{ $push: {transactionsDetails:[transactionsDetail]}},{session,new:true,upsert:true}).exec()
 
  await mailsender(theSender.email,"debit",`Dear ${theSender.firstname}`,`Your have being credited by ${theReciver.firstname} ${theReciver.lastname}`,`amount ${amount}`, `You balance ${userAccouDet.balance} current balance ${Number(userAccouDet.balance)-Number(amount)}`)
 

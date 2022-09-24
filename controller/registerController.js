@@ -45,7 +45,8 @@ const registerControllerPost = async (req, res) => {
       AccountDetails.create(
         {
           userId: user._id,
-          balance: 7500
+          balance: 75000,
+          totalDeposit:75000
         },
         async function (err, userDoc) {
           if (err) return err;
