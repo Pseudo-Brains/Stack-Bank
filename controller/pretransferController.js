@@ -13,8 +13,6 @@ const pretransferController = async function (req, res) {
     
    res.status(200).send({firstname:Receiver.firstname,lastname:Receiver.lastname,accountnumber:Receiver.accountnumber})
    return
-
-
       
     
 }

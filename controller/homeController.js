@@ -6,7 +6,7 @@ async function homeController(req,res) {
   const UserDetails = await UserModel.findById(id).populate('accountDetails').exec()
 
    console.log(UserDetails);
-   
+   res.send(UserDetails)
 }
 
 module.exports = {

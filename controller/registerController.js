@@ -16,6 +16,7 @@ const registerControllerPost = async (req, res) => {
     // const harshPassword = await bcrypt.hash(req.body.password, salt);
 
     const emailExist = await UserModel.findOne({ email: req.body.email });
+
     if (emailExist) return res.status(400).send("Email already exist😒😒");
 
     const phoneNoExist = await UserModel.findOne({ phone: req.body.phone });
@@ -44,7 +45,7 @@ const registerControllerPost = async (req, res) => {
       AccountDetails.create(
         {
           userId: user._id,
-          // balance: 4000
+          balance: 7500
         },
         async function (err, userDoc) {
           if (err) return err;

@@ -1,16 +1,18 @@
 const express = require("express")
 const {SendMSG} = require("../models/sendSMS")
+const crypto = require("crypto");
+const {UserModel,AccountDetails} = require("../models/user")
 
-async function AirtimeController() {
+async function AirtimeController(req,res) {
 
     try {
         const UserId = req.UserData.id;
         const {amount , receiverNumber} = req.body;
       
         const AirtimeSender = await UserModel.findById(UserId);
-         
-       const AirtimeSenderDet = await AccountDetails.findById(LoanOwner._id)
-      
+        console.log(AirtimeSender);
+       const AirtimeSenderDet = await AccountDetails.findOne({userId:UserId})
+        console.log(AirtimeSenderDet);
          if (AirtimeSenderDet.balance < Number(amount)) { 
           return res.status(400).send("YOUR loan should not be greater than your total deposit")
          }
@@ -21,7 +23,9 @@ async function AirtimeController() {
         
       
        const loanAprove = await AccountDetails.updateOne({_id:UserId},{balance:-amount},{new:true})
+
           const transacID= crypto.randomBytes(32).toString("base64")
+
            const transactionsDetail={
           enum: "airtime",
           type: "airtime",
@@ -29,9 +33,9 @@ async function AirtimeController() {
           transactionID:transacID,
           senderName: AirtimeSender.firstname,
           receiverName: receiverNumber,
-          balanceBefore:Number(LoanOwerAccouDe.balance),
-          balanceAfter:Number(LoanOwerAccouDe.balance)-Number(amount),
-          message:"you bought Airtime"
+          balanceBefore:Number(AirtimeSenderDet.balance),
+          balanceAfter:Number(AirtimeSenderDet.balance)-Number(amount),
+          message:"You bought Airtime"
         }
        
      const transactionDone = await UserModel.updateOne({_id:AirtimeSender._id},{ $push: {transactionsDetails:[transactionsDetail]}},{new:true,upsert:true}).exec()

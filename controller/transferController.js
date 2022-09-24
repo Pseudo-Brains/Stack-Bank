@@ -11,7 +11,7 @@ const transfercontroller = async (req, res) => {
 
   try {
     const transacID = crypto.randomBytes(32).toString("hex");
-
+    console.log(typeof transacID);
     const { id } = req.UserData;
 
     const { accountnumber, message, account } = req.body;
@@ -39,7 +39,7 @@ const transfercontroller = async (req, res) => {
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-    return res.status(500).send("internet error");
+    return res.status(500).send({msg:"internet error",err:error});
   }
 };
 module.exports = {

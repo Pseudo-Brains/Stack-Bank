@@ -103,8 +103,9 @@ async function debit(amountt,meassage,acconumber,senderId,transacID, session) {
           message:`User has insufficient balance`
       }
          console.log(theSender._id);
+
      
-      const userAccouDet = await AccountDetails.updateOne({userId:theSender._id},{$inc: {balance:-amount,totalWithdraw:+amount}},{session})
+      const userAccouDet = await AccountDetails.updateOne({userId:theSender._id},{$inc: {balance:-amount,totalWithdraw:+amount}},{session,new:true,upsert:true})
 
       
       const theReciver = await UserModel.findOne({accountnumber:acconumber})
