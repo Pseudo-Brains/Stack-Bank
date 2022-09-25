@@ -10,9 +10,9 @@ async function AirtimeController(req,res) {
         const {amount , receiverNumber} = req.body;
       
         const AirtimeSender = await UserModel.findById(UserId);
-        console.log(AirtimeSender);
+      
        const AirtimeSenderDet = await AccountDetails.findOne({userId:UserId})
-        console.log(AirtimeSenderDet);
+       
          if (AirtimeSenderDet.balance < Number(amount)) { 
           return res.status(400).send("YOUR loan should not be greater than your total deposit")
          }

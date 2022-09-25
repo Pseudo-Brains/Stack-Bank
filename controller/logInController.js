@@ -29,7 +29,7 @@ const logIncontroller = async function (req, res) {
     if (!correctPassword)
       return res.status(400).send("wrong password try angin");
 
-    const token = jwt.sign({ _id: User.id }, process.env.TOKEN_SECRET);
+    const token = jwt.sign({ _id: User.id }, process.env.TOKEN_SECRET,{expiresIn:'45m'});
 
     // await UserModel.updateOne({ email: loginData.email }, { token: token });
     const userData = {

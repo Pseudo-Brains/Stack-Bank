@@ -39,7 +39,7 @@ const { ForgotRoute} = require("./route/forgetPassword")
 const { ResetPasswordRoute} = require("./route/reset-password")
 const { pretransferRoute} = require("./route/pretransfer")
 const { transferRoute} = require("./route/transfer")
-const {AppMain} = require("./route/home")
+const {dashboard} = require("./route/home")
 const {LoanRoute} = require("./route/loan")
 const {AirtimeRoute} = require("./route/Airtime")
 const {LogoutRoute} = require("./route/logout")
@@ -50,7 +50,7 @@ app.use("/api", loginRoute);
 app.use("/api", ForgotRoute);
 app.use("/api", ResetPasswordRoute);
 app.use("/api", pretransferRoute);
-app.use("/api",AppMain);
+app.use("/api",dashboard);
 app.use("/api",transferRoute);
 app.use("/api",LoanRoute);
 app.use("/api",AirtimeRoute);
