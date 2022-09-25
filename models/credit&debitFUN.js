@@ -110,9 +110,7 @@ async function debit(amountt,meassage,acconumber,senderId,transacID, session) {
           statusCode:400,
           message:`User has insufficient balance`
       }
-         console.log(theSender._id);
-
-     
+              
       const userAccouDet = await AccountDetails.findOneAndUpdate({userId:theSender.id},{$inc: {balance:-amount,totalWithdraw:-amount}},{session,new:true})
 
       
@@ -121,11 +119,7 @@ async function debit(amountt,meassage,acconumber,senderId,transacID, session) {
       const senderNam =`${theSender.firstname} ${theSender.lastname}`
       
       const receiverNam = `${theReciver.firstname} ${theReciver.lastname}`
-            
-      // const balAfter = userAccouDet.balance
-      // const balBefore = userAccouDet.balance - amount
-        console.log(userAccouDet);
-
+  
    const transactionsDetail={
      enum: "debit",
      type: "debit",

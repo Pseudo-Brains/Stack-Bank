@@ -32,7 +32,7 @@
     
     const transacID = crypto.randomBytes(25).toString("hex");
 
-    console.log(transacID);
+  
     
     const transactionsDetail={
       enum: "loan",
@@ -45,19 +45,17 @@
       balanceAfter:Number(LoanOwerAccouDe.balance)+Number(amount),
      message:"This the loan that your requested for"
   }
-  console.log("hello");
+
   
   const transactionDone = await UserModel.updateOne({_id:UserId},{ $push: {transactionsDetails:[transactionsDetail]}},{new:true,upsert:true}).exec()
   
-  console.log(transactionDone,"hello");
+
 
    mailsender(LoanOwner.email,"Approved Load" , `dear ${LoanOwner.firstname}`,`Your loan have being approved`, `The Amount is:${amount}`)
-   console.log("hello  ");
+  
 
    return res.status(200).send("your loan is successfull approved");
    
-  //  console.log("hello");
-// }, 6000);
  
 } catch (error) {
   res.status(400).send(error)

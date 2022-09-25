@@ -12,9 +12,6 @@ const registerControllerPost = async (req, res) => {
 
     if (error) return res.status(400).send(error.details[0].message);
 
-    // const salt = await bcrypt.genSalt(10);
-    // const harshPassword = await bcrypt.hash(req.body.password, salt);
-
     const emailExist = await UserModel.findOne({ email: req.body.email });
 
     if (emailExist) return res.status(400).send("Email already exist😒😒");
