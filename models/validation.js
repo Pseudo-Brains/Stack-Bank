@@ -17,6 +17,10 @@ const RegisterValidation = (data) => {
   return Schema.validate(data);
 };
 
+
+
+
+
 const loginValidation = data =>{
   const Schema = Joi.object({
     email: Joi.string()

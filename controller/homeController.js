@@ -1,6 +1,7 @@
 
-const express = require("express")
- const {UserModel,AccountDetails} = require("../models/user")
+ const express = require("express")
+ const {UserModel} = require("../models/user")
+ const {AccountDetails} = require("../models/accountDetail")
 async function homeController(req,res) {
    try { 
     const id = req.UserId

@@ -1,5 +1,6 @@
   const express = require("express")
-  const {UserModel,AccountDetails} = require("../models/user")
+  const {UserModel} = require("../models/user")
+  const {AccountDetails} = require("../models/accountDetail")
   const crypto = require("crypto");
   const {mailsender} = require("../models/sendMailFun")
 
