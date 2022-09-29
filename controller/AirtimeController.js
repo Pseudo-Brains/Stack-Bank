@@ -1,7 +1,8 @@
 const express = require("express")
 const {SendMSG} = require("../models/sendSMS")
 const crypto = require("crypto");
-const {UserModel,AccountDetails} = require("../models/user")
+const {UserModel} = require("../models/user")
+const {AccountDetails} = require("../models/accountDetail")
 
 async function AirtimeController(req,res) {
 
@@ -40,7 +41,7 @@ async function AirtimeController(req,res) {
        
      const transactionDone = await UserModel.updateOne({_id:AirtimeSender._id},{ $push: {transactionsDetails:[transactionsDetail]}},{new:true,upsert:true}).exec()
      
-     SendMSG(`airtime is send to you by ${AirtimeSender.firstname}`,receiverNumber)    
+    //  SendMSG(`airtime is send to you by ${AirtimeSender.firstname}`,receiverNumber)    
      return res.status(200).send("success")
     
 }catch(error){

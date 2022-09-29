@@ -1,5 +1,7 @@
-// const express = require("express");
-const { UserModel, AccountDetails } = require("../models/user");
+const express = require("express");
+const { UserModel} = require("../models/user");
+const {AccountDetails} = require("../models/accountDetail");
+
 const { RegisterValidation } = require("../models/validation");
 const bcrypt = require("bcrypt");
 const { generateAccoNum } = require("../models/generateAccounNumber");

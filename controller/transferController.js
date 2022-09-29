@@ -1,7 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const { credit, debit } = require("../models/credit&debitFUN");
-const { UserModel, AccountDetails } = require("../models/user");
+const {credit} = require("../models/credit");
+const {debit} = require("../models/debit");
+const { UserModel } = require("../models/user");
+const {AccountDetails} = require("../models/accountDetail")
 const crypto = require("crypto");
 
 const transfercontroller = async (req, res) => {

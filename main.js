@@ -9,8 +9,8 @@ require("dotenv").config();
 //   console.log("connected to StackDB")
 // );
 
-  const passwordAtlas = "test12345"
- const atlasDB = `mongodb+srv://pseudobrains:${passwordAtlas}@cluster0.xo0lnsr.mongodb.net/stackDB?retryWrites=true&w=majority`;
+
+//  const atlasDB = `mongodb+srv://pseudobrains:test12345@cluster0.xo0lnsr.mongodb.net/stackDB?retryWrites=true&w=majority`;
 
 // mongoose.connect(atlasDB,{
 //    useNewUrlParser:true,
@@ -21,7 +21,7 @@ require("dotenv").config();
 // } 
 
 
- mongoose.connect(atlasDB).then(() => console.log("DB Connection Success")).catch((err) => console.log(err));
+ mongoose.connect(process.env.DB_ATLAS_LINK).then(() => console.log("DB Connection Success")).catch((err) => console.log(err));
 
 
 // use area
