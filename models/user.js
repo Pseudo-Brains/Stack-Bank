@@ -12,7 +12,7 @@ const transactionSchema = new Schema({
   },
   type: String,
   amount: {
-    type: Number,
+    type: mongoose.Decimal128,
     required: true,
     default: 0.0,
   },
@@ -52,29 +52,11 @@ const transactionSchema = new Schema({
   },
 });
 
-const accountDetailsSchema = new Schema({
-  userId: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
-  },
-  balance: {
-    type: Number,
-    required: true,
-    trim: true,
-    default: 0.0,
-  },
-  totalDeposit: {
-    type: Number,
-    default: 0.0,
-  },
-  totalWithdraw: {
-    type: Number,
-    default: 0.0,
-  },
-  createdAt: {
-    type: Date,
-    default: () => Date.now(),
+// UserSchema
+
+const UserSchema = new Schema({
+  firstname: {
+    type: String,
     required: true,
     immutable: true,
   },
@@ -83,17 +65,6 @@ const accountDetailsSchema = new Schema({
 
 //  account Details Schema
 
-//  Schema for reseting password
-const tokenSchema = new Schema({
-  userId: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
-  },
-  token: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now, expires: 600 },
-});
-
 //  Schame middle wares
 
 transactionSchema.pre("save", function (next) {
@@ -101,13 +72,11 @@ transactionSchema.pre("save", function (next) {
   next();
 });
 
-accountDetailsSchema.pre("save", function (next) {
+UserSchema.pre("save", function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-const AccountDetails = model("AccountDetails", accountDetailsSchema);
+const UserModel = model("User", UserSchema);
 
-const ResetToken = model("ResetToken", tokenSchema);
-
-module.exports = { AccountDetails, ResetToken };
+module.exports = { UserModel };

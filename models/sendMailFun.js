@@ -31,12 +31,11 @@ oAuth2client.setCredentials({refresh_token:process.env.REFRESH_TOKEN })
         from: "Stack Bank 📚 <pseudobrains511@gmail.com>",
         to: emailTo,
         subject: subject,
-        text: message,
         html:` <div> <h1> ${subject}</h1> 
                  <h4> ${message1}</h4>
                  <h4> ${message2}</h4> 
                  <h4> ${message3}</h4> 
-                 <h4> ${message4}</h4>  
+                 <h3> ${message4}</h3>  
                  <hr/>
                  <p> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cumque vel placeat perspiciatis impedit ducimus ipsam nemo asperiores, perferendis ullam quis voluptate! Mollitia ad sapiente quidem numquam blanditiis quam temporibus optio.</p>
                  <br/>

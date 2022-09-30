@@ -1,6 +1,7 @@
-// const express = require("express");
-const { AccountDetails } = require("../models/user");
-const { UserModel } = require("../models/userModel");
+const express = require("express");
+const { UserModel } = require("../models/user");
+const { AccountDetails } = require("../models/accountDetail");
+
 const { RegisterValidation } = require("../models/validation");
 const bcrypt = require("bcrypt");
 const { generateAccoNum } = require("../models/generateAccounNumber");
@@ -13,10 +14,8 @@ const registerControllerPost = async (req, res) => {
 
     if (error) return res.status(400).send(error.details[0].message);
 
-    // const salt = await bcrypt.genSalt(10);
-    // const harshPassword = await bcrypt.hash(req.body.password, salt);
-
     const emailExist = await UserModel.findOne({ email: req.body.email });
+
     if (emailExist) return res.status(400).send("Email already exist😒😒");
 
     const phoneNoExist = await UserModel.findOne({ phone: req.body.phone });
@@ -45,7 +44,8 @@ const registerControllerPost = async (req, res) => {
       AccountDetails.create(
         {
           userId: user._id,
-          balance: 4000,
+          balance: 75000,
+          totalDeposit: 75000,
         },
         async function (err, userDoc) {
           if (err) return err;

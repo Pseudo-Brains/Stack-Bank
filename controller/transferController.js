@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
-const { credit, debit } = require("../models/credit&debitFUN");
+const { credit } = require("../models/credit");
+const { debit } = require("../models/debit");
+const { UserModel } = require("../models/user");
+const { AccountDetails } = require("../models/accountDetail");
 const crypto = require("crypto");
 
 const transfercontroller = async (req, res) => {
@@ -9,14 +12,16 @@ const transfercontroller = async (req, res) => {
 
   try {
     const transacID = crypto.randomBytes(32).toString("hex");
-
+    console.log(typeof transacID);
     const { id } = req.UserData;
 
-    const { accountnumber, message, account } = req.body;
+    const { accountnumber, message, amount } = req.body;
+
+    console.log(amount);
 
     const transactionStatus = await Promise.all([
-      debit(account, message, accountnumber, id, transacID, session),
-      credit(account, message, accountnumber, id, transacID, session),
+      debit(amount, message, accountnumber, id, transacID, session),
+      credit(amount, message, accountnumber, id, transacID, session),
     ]);
 
     const trancactFailed = transactionStatus.filter(
@@ -37,7 +42,7 @@ const transfercontroller = async (req, res) => {
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-    return res.status(500).send("internet error");
+    return res.status(500).send({ msg: "internet error", err: error });
   }
 };
 module.exports = {

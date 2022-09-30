@@ -1,8 +1,6 @@
 const { UserModel } = require("../models/userModel");
 
 const pretransferController = async function (req, res) {
-  console.log(req.UserData);
-  console.log(req.body.accountnumber);
   const Receiver = await UserModel.findOne({
     accountnumber: req.body.accountnumber,
   });

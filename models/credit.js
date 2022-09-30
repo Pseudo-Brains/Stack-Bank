@@ -1,5 +1,6 @@
-const { UserModel, AccountDetails } = require("./user");
-const { mailsender } = require("../models/sendMailFun");
+const { UserModel } = require("./user");
+const { mailsender } = require("./sendMailFun");
+const { AccountDetails } = require("./accountDetail");
 
 async function credit(
   amountt,
@@ -33,13 +34,13 @@ async function credit(
     return {
       status: false,
       statusCode: 404,
-      message: `User ${username} doesn\'t exist`,
+      message: `User user doesn 't exist`,
     };
 
   const userAccouDet = await AccountDetails.findOneAndUpdate(
     { userId: theReciver._id },
     { $inc: { balance: +amount, totalDeposit: +amount } },
-    { session }
+    { session, new: true }
   );
 
   const theSender = await UserModel.findById({ _id: senderId });
@@ -47,6 +48,8 @@ async function credit(
   const senderNam = `${theSender.firstname} ${theSender.lastname}`;
 
   const receiverNam = `${theReciver.firstname} ${theReciver.lastname}`;
+
+  console.log(userAccouDet);
 
   const transactionsDetail = {
     enum: "credit",
@@ -77,13 +80,18 @@ async function credit(
     }`
   );
 
-  return {
-    status: true,
-    statusCode: 201,
-    message: "Credit successful",
-    data: { creditedAccount: userAccouDet, transactionDone },
-  };
+  if (amount < 1)
+    return {
+      status: true,
+      statusCode: 201,
+      message: "Credit successful",
+      data: { creditedAccount: userAccouDet, transactionDone },
+    };
 }
+
+module.exports = {
+  credit,
+};
 
 async function debit(
   amountt,
