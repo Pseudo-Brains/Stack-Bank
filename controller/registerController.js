@@ -1,5 +1,6 @@
 // const express = require("express");
-const { UserModel, AccountDetails } = require("../models/user");
+const { AccountDetails } = require("../models/user");
+const { UserModel } = require("../models/userModel");
 const { RegisterValidation } = require("../models/validation");
 const bcrypt = require("bcrypt");
 const { generateAccoNum } = require("../models/generateAccounNumber");
@@ -44,7 +45,7 @@ const registerControllerPost = async (req, res) => {
       AccountDetails.create(
         {
           userId: user._id,
-          // balance: 4000
+          balance: 4000,
         },
         async function (err, userDoc) {
           if (err) return err;

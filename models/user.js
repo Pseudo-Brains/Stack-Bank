@@ -7,7 +7,7 @@ const { Schema, model } = require("mongoose");
 const transactionSchema = new Schema({
   transactionType: {
     type: String,
-    enum: ["credit","debit","loan","airtime"],
+    enum: ["credit", "debit", "loan", "airtime"],
     required: true,
   },
   type: String,
@@ -52,7 +52,6 @@ const transactionSchema = new Schema({
   },
 });
 
-
 const accountDetailsSchema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
@@ -76,76 +75,10 @@ const accountDetailsSchema = new Schema({
   createdAt: {
     type: Date,
     default: () => Date.now(),
-    required:true,
-    immutable:true
-  },
-  updated_at: { type: Date }
-});
-
-const UserSchema = new Schema({
-  firstname: {
-    type: String,
     required: true,
-    trim: true,
-    min: 2,
-  },
-  lastname: {
-    type: String,
-    required: true,
-    trim: true,
-    min: 2,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    min: 6,
-    lowercase: true,
-  },
-  password: {
-    type: String,
-    required: true,
-    min: 6,
-    max: 25,
-  },
-  phone: {
-    type: Number,
-    min: 11,
-    unique: true,
-    trim: true,
-  },
-  accountDetails: {
-    type: Schema.Types.ObjectId,
-    ref: "AccountDetails",
-  },
-  dateOfBirth: {
-    type: Date,
-    required: true,
-  },
-  isVerified: {
-    type: Boolean,
-    default: false,
-  },
-  emailToken: {
-    type: String,
-    required: true,
-  },
-  accountnumber: {
-    type: Number,
-    unique: true,
-    min: 11,
     immutable: true,
   },
-  transactionsDetails: [transactionSchema],
-  createdAt: {
-    type: Date,
-    default: () => Date.now(),
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now(),
-  },
+  updated_at: { type: Date },
 });
 
 //  account Details Schema
@@ -159,7 +92,6 @@ const tokenSchema = new Schema({
   },
   token: { type: String, required: true },
   createdAt: { type: Date, default: Date.now, expires: 600 },
- 
 });
 
 //  Schame middle wares
@@ -174,17 +106,8 @@ accountDetailsSchema.pre("save", function (next) {
   next();
 });
 
-UserSchema.pre("save", function (next) {
-  this.updatedAt = Date.now();
-  next();
-});
-
-const UserModel = model("User", UserSchema);
-
 const AccountDetails = model("AccountDetails", accountDetailsSchema);
 
 const ResetToken = model("ResetToken", tokenSchema);
 
-module.exports = { UserModel, AccountDetails, ResetToken };
-
-
+module.exports = { AccountDetails, ResetToken };

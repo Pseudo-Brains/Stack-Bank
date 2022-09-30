@@ -1,162 +1,187 @@
-const { UserModel, AccountDetails } = require("./user")
-const {mailsender} = require("../models/sendMailFun")
+const { UserModel, AccountDetails } = require("./user");
+const { mailsender } = require("../models/sendMailFun");
 
-async function credit(amountt,meassage,acconumber,senderId,transacID, session) {
-    const amount = Number(amountt)
-   
-   if (amount <1)return {
-       status: false,
-       statusCode:404,
-       message: `you can not send negative amount`
-   }
+async function credit(
+  amountt,
+  meassage,
+  acconumber,
+  senderId,
+  transacID,
+  session
+) {
+  const amount = Number(amountt);
 
-  const theReciver = await UserModel.findOne({accountnumber:acconumber})
-
-  const theSenderCheck = await UserModel.findById({_id:senderId})
-
-  if (theSenderCheck.accountnumber === Number(acconumber) ) return{
-    status: false,
-    statusCode:400,
-    message: ` you can not creadit your self`
-   }
-
-  if (!theReciver) return {
-   status: false,
-   statusCode:404,
-   message: `User ${username} doesn\'t exist`
- }
-
- const userAccouDet =await  AccountDetails.findOneAndUpdate({userId:theReciver._id},{ $inc: {balance:+amount,totalDeposit:+amount}},{session})
-
- const theSender = await UserModel.findById({_id:senderId})
-
-
- const senderNam =`${theSender.firstname} ${theSender.lastname}`
-
- const receiverNam = `${theReciver.firstname} ${theReciver.lastname}`
-
- const transactionsDetail={
-   enum: "credit",
-   type: "credit",
-   amount: amount,
-   transactionID:transacID,
-   senderName: senderNam,
-   receiverName: receiverNam,
-   balanceBefore:Number(userAccouDet.balance),
-   balanceAfter:Number(userAccouDet.balance)+Number(amount),
-   message:meassage
- }
-
-   const transactionDone = await UserModel.updateOne({_id:theReciver._id},{ $push: {transactionsDetails:[transactionsDetail]}},{session,new:true,upsert:true}).exec()
-
-    await mailsender(theReciver.email,"Credit",`Dear ${theReciver.firstname}`,`Your have being credited by ${theSender.firstname} ${theSender.lastname}`,`amount ${amount}`, `You balance ${userAccouDet.balance} current balance ${Number(userAccouDet.balance)+Number(amount)}`)
-
+  if (amount < 1)
     return {
-   status: true,
-   statusCode:201,
-   message: 'Credit successful',
-   data: {creditedAccount:userAccouDet, transactionDone}
- }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-async function debit(amountt,meassage,acconumber,senderId,transacID, session) {
-   const amount = Number(amountt)
-
-   const theSender = await UserModel.findOne({_id:senderId})
-
-     if (theSender.accountnumber === Number(acconumber) ) return{
       status: false,
-      statusCode:400,
-      message: ` you can not send money to your self`
-     }
+      statusCode: 404,
+      message: `you can not send negative amount`,
+    };
 
-   
-    if (!theSender) return {
-          status: false,
-          statusCode:404,
-          message: `User  doesn\'t exist`
-      }
-     
-      if (amount < 1)return {
-            status: false,
-            statusCode:404,
-            message: `you can not send negative amount`
-        }
+  const theReciver = await UserModel.findOne({ accountnumber: acconumber });
 
-         const theSenderAccoDet = await AccountDetails.findOne({userId:theSender._id})
-     
-         
-      if (Number(theSenderAccoDet.balance)< amount)return {
-          status: false,
-          statusCode:400,
-          message:`User has insufficient balance`
-      }
-         console.log(theSender._id);
-     
-      const userAccouDet = await AccountDetails.updateOne({userId:theSender._id},{$inc: {balance:-amount,totalWithdraw:+amount}},{session})
+  const theSenderCheck = await UserModel.findById({ _id: senderId });
 
-      
-      const theReciver = await UserModel.findOne({accountnumber:acconumber})
-      
-      const senderNam =`${theSender.firstname} ${theSender.lastname}`
-      
-      const receiverNam = `${theReciver.firstname} ${theReciver.lastname}`
-            
-  
-   const transactionsDetail={
-     enum: "debit",
-     type: "debit",
-     amount: amount,
-     transactionID:transacID,
-     senderName: senderNam,
-     receiverName: receiverNam,
-     balanceBefore:Number(userAccouDet.balance),
-     balanceAfter:Number(userAccouDet.balance)-Number(amount),
-     message:meassage
- }
+  if (theSenderCheck.accountnumber === Number(acconumber))
+    return {
+      status: false,
+      statusCode: 400,
+      message: ` you can not creadit your self`,
+    };
 
- const transactionDone = await UserModel.updateOne({_id:theSender._id},{ $push: {transactionsDetails:[transactionsDetail]}},{session, new: true, upsert: true }).exec()
+  if (!theReciver)
+    return {
+      status: false,
+      statusCode: 404,
+      message: `User ${username} doesn\'t exist`,
+    };
 
- await mailsender(theSender.email,"debit",`Dear ${theSender.firstname}`,`Your have being credited by ${theReciver.firstname} ${theReciver.lastname}`,`amount ${amount}`, `You balance ${userAccouDet.balance} current balance ${Number(userAccouDet.balance)-Number(amount)}`)
+  const userAccouDet = await AccountDetails.findOneAndUpdate(
+    { userId: theReciver._id },
+    { $inc: { balance: +amount, totalDeposit: +amount } },
+    { session }
+  );
 
-    
- return {
-   status: true,
-   statusCode:201,
-   message: 'debited successful',
-   data: {creditedAccount:userAccouDet, transactionDone}
- }
+  const theSender = await UserModel.findById({ _id: senderId });
+
+  const senderNam = `${theSender.firstname} ${theSender.lastname}`;
+
+  const receiverNam = `${theReciver.firstname} ${theReciver.lastname}`;
+
+  const transactionsDetail = {
+    enum: "credit",
+    type: "credit",
+    amount: amount,
+    transactionID: transacID,
+    senderName: senderNam,
+    receiverName: receiverNam,
+    balanceBefore: Number(userAccouDet.balance),
+    balanceAfter: Number(userAccouDet.balance) + Number(amount),
+    message: meassage,
+  };
+
+  const transactionDone = await UserModel.updateOne(
+    { _id: theReciver._id },
+    { $push: { transactionsDetails: [transactionsDetail] } },
+    { session, new: true, upsert: true }
+  ).exec();
+
+  await mailsender(
+    theReciver.email,
+    "Credit",
+    `Dear ${theReciver.firstname}`,
+    `Your have being credited by ${theSender.firstname} ${theSender.lastname}`,
+    `amount ${amount}`,
+    `You balance ${userAccouDet.balance} current balance ${
+      Number(userAccouDet.balance) + Number(amount)
+    }`
+  );
+
+  return {
+    status: true,
+    statusCode: 201,
+    message: "Credit successful",
+    data: { creditedAccount: userAccouDet, transactionDone },
+  };
 }
-module.exports ={
-    credit,
-    debit
+
+async function debit(
+  amountt,
+  meassage,
+  acconumber,
+  senderId,
+  transacID,
+  session
+) {
+  const amount = Number(amountt);
+
+  const theSender = await UserModel.findOne({ _id: senderId });
+
+  if (theSender.accountnumber === Number(acconumber))
+    return {
+      status: false,
+      statusCode: 400,
+      message: ` you can not send money to your self`,
+    };
+
+  if (!theSender)
+    return {
+      status: false,
+      statusCode: 404,
+      message: `User  doesn\'t exist`,
+    };
+
+  if (amount < 1)
+    return {
+      status: false,
+      statusCode: 404,
+      message: `you can not send negative amount`,
+    };
+
+  const theSenderAccoDet = await AccountDetails.findOne({
+    userId: theSender._id,
+  });
+
+  if (Number(theSenderAccoDet.balance) < amount)
+    return {
+      status: false,
+      statusCode: 400,
+      message: `User has insufficient balance`,
+    };
+  console.log(theSender._id);
+
+  const userAccouDet = await AccountDetails.updateOne(
+    { userId: theSender._id },
+    { $inc: { balance: -amount, totalWithdraw: +amount } },
+    { session }
+  );
+
+  const theReciver = await UserModel.findOne({ accountnumber: acconumber });
+
+  const senderNam = `${theSender.firstname} ${theSender.lastname}`;
+
+  const receiverNam = `${theReciver.firstname} ${theReciver.lastname}`;
+
+  const transactionsDetail = {
+    enum: "debit",
+    type: "debit",
+    amount: amount,
+    transactionID: transacID,
+    senderName: senderNam,
+    receiverName: receiverNam,
+    balanceBefore: Number(userAccouDet.balance),
+    balanceAfter: Number(userAccouDet.balance) - Number(amount),
+    message: meassage,
+  };
+
+  const transactionDone = await UserModel.updateOne(
+    { _id: theSender._id },
+    { $push: { transactionsDetails: [transactionsDetail] } },
+    { session, new: true, upsert: true }
+  ).exec();
+
+  await mailsender(
+    theSender.email,
+    "debit",
+    `Dear ${theSender.firstname}`,
+    `Your have being credited by ${theReciver.firstname} ${theReciver.lastname}`,
+    `amount ${amount}`,
+    `You balance ${userAccouDet.balance} current balance ${
+      Number(userAccouDet.balance) - Number(amount)
+    }`
+  );
+
+  return {
+    status: true,
+    statusCode: 201,
+    message: "debited successful",
+    data: { creditedAccount: userAccouDet, transactionDone },
+  };
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+module.exports = {
+  credit,
+  debit,
+};
 
 //  ////////////////////////////////
 //  ///////////////////////////
@@ -164,7 +189,7 @@ module.exports ={
 
 // async function credit(amountt,meassage,acconumber,senderId,transacID) {
 //     const amount = Number(amountt)
-   
+
 //    if (amount <1)return {
 //        status: false,
 //        statusCode:404,
@@ -183,7 +208,6 @@ module.exports ={
 
 //  const theSender = await UserModel.findById({_id:senderId})
 
-
 //  const senderNam =`${theSender.firstname} ${theSender.lastname}`
 
 //  const receiverNam = `${theReciver.firstname} ${theReciver.lastname}`
@@ -201,7 +225,6 @@ module.exports ={
 
 //  const transactionDone =await  AccountDetails.findOneAndUpdate({userId:theReciver._id},{$push:{transactionsDetails:transactionsDetail}})
 
-
 //  return {
 //    status: true,
 //    statusCode:201,
@@ -209,8 +232,6 @@ module.exports ={
 //    data: {creditedAccount:userAccouDet, transactionDone}
 //  }
 // }
-
-
 
 // async function debit(amountt,meassage,acconumber,senderId,transacID) {
 //    const amount = Number(amountt)
@@ -238,7 +259,7 @@ module.exports ={
 //    }
 //    console.log("4");
 //    const userAccouDet = AccountDetails.findByIdAndUpdate({userId:theSender._id},{balance: - amount, totalWithdraw: + amount})
-   
+
 //    console.log("5");
 //    const theReciver = await UserModel.findOne({accountnumber:acconumber})
 //    console.log("1");

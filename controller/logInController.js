@@ -2,7 +2,8 @@ const express = require("express");
 const joi = require("joi");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { UserModel, AccountDetails } = require("../models/user");
+// const { UserModel, AccountDetails } = require("../models/user");
+const { UserModel } = require("../models/userModel");
 const { loginValidation } = require("../models/validation");
 const crypto = require("crypto");
 const { EncryptUserInfo } = require("../util/encrypt");
@@ -44,11 +45,10 @@ const logIncontroller = async function (req, res) {
       accountnumber: User.accountnumber,
       SecUSerInfo: SecretUserInfo,
     });
-
   } catch (error) {
     return res.status(200).send(error);
   }
 };
 module.exports = {
-  logIncontroller
+  logIncontroller,
 };
