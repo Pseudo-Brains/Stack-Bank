@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "nodemon main.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "mongo": "/Users/t/mongodb/bin/mongod --dbpath=/Users/t/mongodb-data"
   },
   "repository": {
     "type": "git",
