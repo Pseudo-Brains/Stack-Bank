@@ -1,12 +1,16 @@
 const express = require('express');
 const { UserModel } = require('../models/user');
 const { AccountDetails } = require('../models/accountDetail');
-const { RegisterValidation } = require('../models/validation');
 const bcrypt = require('bcrypt');
 const { generateAccoNum } = require('../models/generateAccounNumber');
-const crypto = require('crypto');
-const { object } = require('joi');
 const {ResetToken } = require("../models/tokenSchema");
+const { RegisterValidation,loginValidation } = require("../models/validation");
+const crypto = require("crypto");
+const jwt = require("jsonwebtoken")
+const { object } = require("joi");
+const joi = require("joi")
+const {DecryptUserInfo,EncryptUserInfo} = require('../util/encrypt')
+
 
 /**
  * @desc This function handles the user register
@@ -14,6 +18,11 @@ const {ResetToken } = require("../models/tokenSchema");
  * @param {*} res
  * @returns
  */
+
+
+
+
+
 const registerControllerPost = async (req, res) => {
   try {
     const { error } = RegisterValidation(req.body);
@@ -85,11 +94,12 @@ const forgotPasswordController = async function (req, res) {
     if (error)
       return res.status(400).send({ message: error.details[0].message });
 
-    console.log(error);
+
 
     const user = await UserModel.findOne({ email: req.body.email });
-
+    
     if (!user) return res.status(400).send({ message: 'User does not exist' });
+
 
     let token = await ResetToken.findOne({ userId: user._id });
 
@@ -100,10 +110,14 @@ const forgotPasswordController = async function (req, res) {
       }).save();
     }
 
-    const link = `${process.env.BASE_URL}/api/reset-password/${user._id}/${token.token}`;
+    
+
+    const link = `${process.env.BASE_URL}/api/user/reset-password/${user._id}/${token.token}`;
+
 
     //how the params on the mailsender emailTo,   subject,   message
-
+    
+  
     mailsender(req.body.email, 'Reset your password', link)
       .then((result) =>
         res.status(200).send({
@@ -111,10 +125,10 @@ const forgotPasswordController = async function (req, res) {
             'password reset link sent have being send to your email account',
           result,
         })
-      )
-      .catch((error) =>
+      ).catch((error) =>
         res.status(400).send({ message: 'connect to internet', error: error })
       );
+      
   } catch (error) {
     res.status(500).send({ message: error });
   }
@@ -145,18 +159,18 @@ const logIncontroller = async function (req, res) {
       User.password
     );
 
+    
     if (!correctPassword)
-      return res.status(400).send('wrong password try angin');
+    return res.status(400).send('wrong password try angin');
 
-    const token = jwt.sign({ _id: User.id }, process.env.TOKEN_SECRET, {
-      expiresIn: '45m',
-    });
-
-    // await UserModel.updateOne({ email: loginData.email }, { token: token });
+    console.log(User.id);
+    
+    const token = jwt.sign({ _id: User.id }, process.env.TOKEN_SECRET, { expiresIn:'40m'});
+        
     const userData = {
       email: User.email,
       id: User._id,
-    };
+    }; 
 
     const SecretUserInfo = EncryptUserInfo(JSON.stringify(userData));
     return res.status(200).send({

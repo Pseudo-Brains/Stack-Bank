@@ -1,5 +1,10 @@
 const express = require('express');
-const { UserModel } = require('../models/user');
+const mongoose = require("mongoose");
+const {credit} = require("../models/credit");
+const {debit} = require("../models/debit");
+const { UserModel } = require("../models/user");
+const {AccountDetails} = require("../models/accountDetail")
+const crypto = require("crypto");
 
 const pretransferController = async function (req, res) {
   const Receiver = await UserModel.findOne({
@@ -28,7 +33,7 @@ const transfercontroller = async (req, res) => {
 
     const { accountnumber, message, amount } = req.body;
 
-    console.log(amount);
+   
 
     const transactionStatus = await Promise.all([
       debit(amount, message, accountnumber, id, transacID, session),

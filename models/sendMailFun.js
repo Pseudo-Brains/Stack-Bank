@@ -58,7 +58,12 @@ async function mailsender(
   return result;
 }
 
-const sendMail = (mailOptions) => {
+const sendMail = (  emailTo,
+  subject,
+  message1,
+  message2 = '',
+  message3 = '',
+  message4 = '') => {
 
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   const msg = {
