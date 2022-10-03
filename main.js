@@ -5,9 +5,34 @@ const mongoose = require("mongoose");
 
 require("dotenv").config();
 
-// mongoose.connect("mongodb://localhost/StackDB", () =>
-//   console.log("connected to StackDB")
-// );
+
+
+// use area
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+
+const connection = process.env.NODE_ENV == 'production' ? process.env.DB_ATLAS_LINK  : 'mongodb://127.0.0.1:27017/StackDB';
+
+mongoose.connect(connection, () =>
+  console.log("connected to StackDB")
+);
+//routes
+const { UserRouter } = require("./route/user-route.js");
+const { TransactionRouter } = require("./route/transaction.js");
+
+
+
+// Route Middleware
+app.use("/api/user", UserRouter);
+app.use("/api/tx", TransactionRouter);
+
+
+
 
 
 //  const atlasDB = `mongodb+srv://pseudobrains:test12345@cluster0.xo0lnsr.mongodb.net/stackDB?retryWrites=true&w=majority`;
@@ -21,42 +46,15 @@ require("dotenv").config();
 // } 
 
 
- mongoose.connect(process.env.DB_ATLAS_LINK).then(() => console.log("DB Connection Success")).catch((err) => console.log(err));
+
+app.get("/", (req,res) => {
+  res.send({message : "welcome to  stak bank"});
+});
 
 
-// use area
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-
-//routes
-const { registerRoute } = require("./route/register");
-const { loginRoute } = require("./route/login");
-const { ForgotRoute} = require("./route/forgetPassword")
-const { ResetPasswordRoute} = require("./route/reset-password")
-const { pretransferRoute} = require("./route/pretransfer")
-const { transferRoute} = require("./route/transfer")
-const {dashboard} = require("./route/home")
-const {LoanRoute} = require("./route/loan")
-const {AirtimeRoute} = require("./route/Airtime")
-const {LogoutRoute} = require("./route/logout")
-
-// Route Middleware
-app.use("/api", registerRoute);
-app.use("/api", loginRoute);
-app.use("/api", ForgotRoute);
-app.use("/api", ResetPasswordRoute);
-app.use("/api", pretransferRoute);
-app.use("/api",dashboard);
-app.use("/api",transferRoute);
-app.use("/api",LoanRoute);
-app.use("/api",AirtimeRoute);
-app.use("/api",LogoutRoute);
-
-
+app.get("/api", (req,res) => {
+    res.send({message : "welcome to  stak bank"});
+});
 
 
 app.listen(4040, () => console.log("server is runing"));
