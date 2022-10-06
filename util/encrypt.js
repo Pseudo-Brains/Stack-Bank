@@ -11,8 +11,8 @@ function EncryptUserInfo (UserData) {
    return UserData
  }
 
-
  module.exports ={
     EncryptUserInfo,
     DecryptUserInfo
  }
+ 

@@ -16,9 +16,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 
-const connection = process.env.NODE_ENV == 'production' ? process.env.DB_ATLAS_LINK  : 'mongodb://127.0.0.1:27017/StackDB';
+const connection = process.env.NODE_ENV == 'production' ? 'mongodb://127.0.0.1:27017/StackDB':process.env.DB_ATLAS_LINK;
 
-mongoose.connect(connection, () =>
+mongoose.connect(process.env.DB_ATLAS_LINK, () =>
   console.log("connected to StackDB")
 );
 //routes
