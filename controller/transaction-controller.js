@@ -1,24 +1,31 @@
-const express = require('express');
+const express = require("express");
 const mongoose = require("mongoose");
-const {credit} = require("../models/credit");
-const {debit} = require("../models/debit");
+const { credit } = require("../models/credit");
+const { debit } = require("../models/debit");
 const { UserModel } = require("../models/user");
-const {AccountDetails} = require("../models/accountDetail")
+const { AccountDetails } = require("../models/accountDetail");
 const crypto = require("crypto");
 
 const pretransferController = async function (req, res) {
-  const Receiver = await UserModel.findOne({
-    accountnumber: req.body.accountnumber,
-  });
-  if (!Receiver)
-    return res.status(400).send({ meassage: "Account Number doesn't Exist" });
-
-  res.status(200).send({
-    firstname: Receiver.firstname,
-    lastname: Receiver.lastname,
-    accountnumber: Receiver.accountnumber,
-  });
-  return;
+  try {
+    console.log(req.body);
+    const receiver = await UserModel.findOne({
+      accountnumber: req.body.accountnumber.toString(),
+    });
+    // console.log(req.body.accountnumber);
+    // console.log(receiver);
+    if (!receiver) {
+      res.status(400).send({ meassage: "Account Number doesn't Exist" });
+    } else {
+      res.status(200).send({
+        firstname: receiver.firstname,
+        lastname: receiver.lastname,
+        accountnumber: receiver.accountnumber,
+      });
+    }
+  } catch (error) {
+    res.status(404).send(console.log(error.message));
+  }
 };
 
 const transfercontroller = async (req, res) => {
@@ -27,13 +34,11 @@ const transfercontroller = async (req, res) => {
   await session.startTransaction();
 
   try {
-    const transacID = crypto.randomBytes(32).toString('hex');
-    console.log(typeof transacID);
+    // console.log(req.body);
+    const transacID = crypto.randomBytes(32).toString("hex");
+    // console.log(typeof transacID);
     const { id } = req.UserData;
-
     const { accountnumber, message, amount } = req.body;
-
-   
 
     const transactionStatus = await Promise.all([
       debit(amount, message, accountnumber, id, transacID, session),
@@ -50,15 +55,15 @@ const transfercontroller = async (req, res) => {
       //  return res.send(errorMsg)
       return res
         .status(200)
-        .send({ message: 'transaction feild', errMsg: errorMsg });
+        .send({ message: "transaction failed", errMsg: errorMsg });
     }
     await session.commitTransaction();
     session.endSession();
-    return res.status(200).send('successful transfer');
+    return res.status(200).send("successful transfer");
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-    return res.status(500).send({ msg: 'internet error', err: error });
+    return res.status(400).send({ msg: "internet error", err: error });
   }
 };
 
@@ -76,11 +81,11 @@ async function loanController(req, res) {
     if (LoanOwerAccouDe.totalDeposit < Number(amount)) {
       return res
         .status(400)
-        .send('YOUR loan should not be greater than your total deposit');
+        .send("YOUR loan should not be greater than your total deposit");
     }
 
     if (Number(amount) < 1) {
-      return res.status(401).send('your amount can not be negative number');
+      return res.status(401).send("your amount can not be negative number");
     }
 
     // "your loan request is being procssed"
@@ -93,18 +98,18 @@ async function loanController(req, res) {
       { new: true }
     );
 
-    const transacID = crypto.randomBytes(25).toString('hex');
+    const transacID = crypto.randomBytes(25).toString("hex");
 
     const transactionsDetail = {
-      enum: 'loan',
-      type: 'loan',
+      enum: "loan",
+      type: "loan",
       amount: amount,
       transactionID: transacID,
-      senderName: 'Stack bank',
+      senderName: "Stack bank",
       receiverName: LoanOwner.firstname,
       balanceBefore: Number(LoanOwerAccouDe.balance),
       balanceAfter: Number(LoanOwerAccouDe.balance) + Number(amount),
-      message: 'This the loan that your requested for',
+      message: "This the loan that your requested for",
     };
 
     const transactionDone = await UserModel.updateOne(
@@ -113,15 +118,16 @@ async function loanController(req, res) {
       { new: true, upsert: true }
     ).exec();
 
-    mailsender(
-      LoanOwner.email,
-      'Approved Load',
-      `dear ${LoanOwner.firstname}`,
-      `Your loan have being approved`,
-      `The Amount is:${amount}`
-    );
+    console.log(transactionDone);
+    // mailsender(
+    //   LoanOwner.email,
+    //   "Approved Load",
+    //   `dear ${LoanOwner.firstname}`,
+    //   `Your loan have being approved`,
+    //   `The Amount is:${amount}`
+    // );
 
-    return res.status(200).send('your loan is successfull approved');
+    return res.status(200).send("your loan is successfull approved");
   } catch (error) {
     res.status(400).send(error);
   }
@@ -139,11 +145,11 @@ async function AirtimeController(req, res) {
     if (AirtimeSenderDet.balance < Number(amount)) {
       return res
         .status(400)
-        .send('YOUR loan should not be greater than your total deposit');
+        .send("YOUR loan should not be greater than your total deposit");
     }
 
     if (Number(amount) < 1) {
-      return res.status(401).send('your amount can not be negative number');
+      return res.status(401).send("your amount can not be negative number");
     }
 
     const loanAprove = await AccountDetails.updateOne(
@@ -152,18 +158,18 @@ async function AirtimeController(req, res) {
       { new: true }
     );
 
-    const transacID = crypto.randomBytes(32).toString('base64');
+    const transacID = crypto.randomBytes(32).toString("base64");
 
     const transactionsDetail = {
-      enum: 'airtime',
-      type: 'airtime',
+      enum: "airtime",
+      type: "airtime",
       amount: amount,
       transactionID: transacID,
       senderName: AirtimeSender.firstname,
       receiverName: receiverNumber,
       balanceBefore: Number(AirtimeSenderDet.balance),
       balanceAfter: Number(AirtimeSenderDet.balance) - Number(amount),
-      message: 'You bought Airtime',
+      message: "You bought Airtime",
     };
 
     const transactionDone = await UserModel.updateOne(
@@ -172,8 +178,10 @@ async function AirtimeController(req, res) {
       { new: true, upsert: true }
     ).exec();
 
+    // console.log(transactionDone);
+
     //  SendMSG(`airtime is send to you by ${AirtimeSender.firstname}`,receiverNumber)
-    return res.status(200).send('success');
+    return res.status(200).send("success");
   } catch (error) {
     console.log(error);
   }
@@ -183,5 +191,5 @@ module.exports = {
   pretransferController,
   transfercontroller,
   loanController,
-  AirtimeController
+  AirtimeController,
 };

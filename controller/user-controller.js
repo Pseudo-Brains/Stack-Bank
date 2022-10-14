@@ -1,27 +1,22 @@
-const express = require('express');
-const { UserModel } = require('../models/user');
-const { AccountDetails } = require('../models/accountDetail');
-const bcrypt = require('bcrypt');
-const { generateAccoNum } = require('../models/generateAccounNumber');
-const {ResetToken } = require("../models/tokenSchema");
-const { RegisterValidation,loginValidation } = require("../models/validation");
+const express = require("express");
+const { UserModel } = require("../models/user");
+const { AccountDetails } = require("../models/accountDetail");
+const bcrypt = require("bcrypt");
+const { generateAccoNum } = require("../models/generateAccounNumber");
+const { ResetToken } = require("../models/tokenSchema");
+const { RegisterValidation, loginValidation } = require("../models/validation");
 const crypto = require("crypto");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
 const { object } = require("joi");
-const joi = require("joi")
-const {DecryptUserInfo,EncryptUserInfo} = require('../util/encrypt')
-
+const joi = require("joi");
+const { DecryptUserInfo, EncryptUserInfo } = require("../util/encrypt");
 
 /**
  * @desc This function handles the user register
- * @param {*} req 
+ * @param {*} req
  * @param {*} res
  * @returns
  */
-
-
-
-
 
 const registerControllerPost = async (req, res) => {
   try {
@@ -31,11 +26,11 @@ const registerControllerPost = async (req, res) => {
 
     const emailExist = await UserModel.findOne({ email: req.body.email });
 
-    if (emailExist) return res.status(400).send('Email already exist😒😒');
+    if (emailExist) return res.status(400).send("Email already exist😒😒");
 
     const phoneNoExist = await UserModel.findOne({ phone: req.body.phone });
 
-    if (phoneNoExist) return res.status(400).send('Number already exist☑️☑️');
+    if (phoneNoExist) return res.status(400).send("Number already exist☑️☑️");
 
     const salt = await bcrypt.genSalt(10);
 
@@ -51,7 +46,7 @@ const registerControllerPost = async (req, res) => {
       phone: req.body.phone,
       dateOfBirth: req.body.dateOfBirth,
       accountnumber: AccountNumber,
-      emailToken: crypto.randomBytes(64).toString('hex'),
+      emailToken: crypto.randomBytes(64).toString("hex"),
       isVerfied: false,
     });
     const savedUser = await user.save(async (err, user) => {
@@ -68,10 +63,10 @@ const registerControllerPost = async (req, res) => {
             { _id: user._id },
             { accountDetails: userDoc._id }
           );
-          return 'success';
+          return "success";
         }
       );
-      res.status(200).send({ message: 'user registeration successful' });
+      res.status(200).send({ message: "user registeration successful" });
     });
   } catch (err) {
     res.status(400).send(err);
@@ -94,41 +89,34 @@ const forgotPasswordController = async function (req, res) {
     if (error)
       return res.status(400).send({ message: error.details[0].message });
 
-
-
     const user = await UserModel.findOne({ email: req.body.email });
-    
-    if (!user) return res.status(400).send({ message: 'User does not exist' });
 
+    if (!user) return res.status(400).send({ message: "User does not exist" });
 
     let token = await ResetToken.findOne({ userId: user._id });
 
     if (!token) {
       token = await new ResetToken({
         userId: user._id,
-        token: crypto.randomBytes(20).toString('hex'),
+        token: crypto.randomBytes(20).toString("hex"),
       }).save();
     }
 
-    
-
     const link = `${process.env.BASE_URL}/api/user/reset-password/${user._id}/${token.token}`;
 
-
     //how the params on the mailsender emailTo,   subject,   message
-    
-  
-    mailsender(req.body.email, 'Reset your password', link)
+
+    mailsender(req.body.email, "Reset your password", link)
       .then((result) =>
         res.status(200).send({
           message:
-            'password reset link sent have being send to your email account',
+            "password reset link sent have being send to your email account",
           result,
         })
-      ).catch((error) =>
-        res.status(400).send({ message: 'connect to internet', error: error })
+      )
+      .catch((error) =>
+        res.status(400).send({ message: "connect to internet", error: error })
       );
-      
   } catch (error) {
     res.status(500).send({ message: error });
   }
@@ -152,25 +140,26 @@ const logIncontroller = async function (req, res) {
 
     const User = await UserModel.findOne({ email: loginData.email });
 
-    if (!User) return res.status(400).send('wrong email try angin');
+    if (!User) return res.status(400).send("wrong email try angin");
 
     const correctPassword = await bcrypt.compare(
       loginData.password,
       User.password
     );
 
-    
     if (!correctPassword)
-    return res.status(400).send('wrong password try angin');
+      return res.status(400).send("wrong password try angin");
 
     console.log(User.id);
-    
-    const token = jwt.sign({ _id: User.id }, process.env.TOKEN_SECRET, { expiresIn:'40m'});
-        
+
+    const token = jwt.sign({ _id: User.id }, process.env.TOKEN_SECRET, {
+      expiresIn: "40m",
+    });
+
     const userData = {
       email: User.email,
       id: User._id,
-    }; 
+    };
 
     const SecretUserInfo = EncryptUserInfo(JSON.stringify(userData));
     return res.status(200).send({
@@ -197,15 +186,15 @@ const resetPasswordController = async function (req, res) {
 
     const user = await UserModel.findOne({ _id: id });
 
-    if (!user) return res.status(401).send({ message: 'invaild link' });
-    console.log('transaction');
+    if (!user) return res.status(401).send({ message: "invaild link" });
+    console.log("transaction");
 
     let token = await ResetToken.findOne({
       userId: id,
       token: Ptoken,
     });
 
-    if (!token) return res.status(400).send({ message: 'invaild link' });
+    if (!token) return res.status(400).send({ message: "invaild link" });
 
     const PasswordSchema = joi.object({
       password: joi.string().min(6).required(),
@@ -224,9 +213,9 @@ const resetPasswordController = async function (req, res) {
 
     await ResetToken.findOneAndDelete({ token: token.tokens });
 
-    console.log('hello');
+    console.log("hello");
 
-    res.status(200).send({ message: 'success' });
+    res.status(200).send({ message: "success" });
   } catch (error) {
     res.status(500).send({ message: error });
   }
@@ -237,32 +226,30 @@ async function homeController(req, res) {
     const id = req.UserId;
 
     const UserDetails = await UserModel.findById(id)
-      .populate('accountDetails')
+      .populate("accountDetails")
       .exec();
     const mainAccountDetails = await AccountDetails.findOne({ userId: id });
 
-    res
-      .status(200)
-      .send({
-        firstname: UserDetails.firstname,
-        lastname: UserDetails.lastname,
-        accountnumber: UserDetails.accountnumber,
-        phone: UserDetails.phone,
-        accountDetails: UserDetails.transactionsDetails,
-        balance: mainAccountDetails.balance,
-        totalDeposit: mainAccountDetails.totalDeposit,
-        totalWithdraw: mainAccountDetails.totalWithdraw,
-      });
+    res.status(200).send({
+      firstname: UserDetails.firstname,
+      lastname: UserDetails.lastname,
+      accountnumber: UserDetails.accountnumber,
+      phone: UserDetails.phone,
+      accountDetails: UserDetails.transactionsDetails,
+      balance: mainAccountDetails.balance,
+      totalDeposit: mainAccountDetails.totalDeposit,
+      totalWithdraw: mainAccountDetails.totalWithdraw,
+    });
   } catch (error) {
-    res.status(400).send('someThing went wrong');
+    res.status(400).send("someThing went wrong");
   }
 }
 
 function logoutController(req, res) {
-  const SecUSerInfo = req.header('SecUSerInfo');
-  const token = req.header('token');
+  const SecUSerInfo = req.header("SecUSerInfo");
+  const token = req.header("token");
 
-  token = ('token', '', { maxAge: 2 });
+  token = ("token", "", { maxAge: 2 });
   SecUSerInfo = SecUSerInfo;
 
   res.status(200).send({ token: token, SecUSerInfo: SecUSerInfo });
@@ -272,7 +259,7 @@ const verifyUser = async (req, res) => {
   await UserModel.findOne({ emailToken: req.body.emailToken })
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'User Not found.' });
+        return res.status(404).send({ message: "User Not found." });
       }
       user.isVerified = true;
       user.save((err) => {
@@ -282,7 +269,7 @@ const verifyUser = async (req, res) => {
         }
       });
     })
-    .catch((e) => console.log('error', e));
+    .catch((e) => console.log("error", e));
 };
 module.exports = {
   registerControllerPost,
