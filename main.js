@@ -46,4 +46,4 @@ app.get("/api", (req, res) => {
   res.send({ message: "welcome to  stak bank" });
 });
 
-app.listen(4040, () => console.log("server is runing"));
+app.listen(process.env.PORT, () => console.log("server is runing"));
